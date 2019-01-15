@@ -1,2 +1,11 @@
-# memory
-Github are here, I am
+### 前端杂谈，尽量每周更新:)
+
+- [了解一下console吧](https://github.com/FoxDaxian/memory/issues/1)
+- [css和webpack的际遇](https://github.com/FoxDaxian/memory/issues/2)
+- [你可以让你的字体资源更小](https://github.com/FoxDaxian/memory/issues/4)
+- [怎么让文字可以围绕在奇奇怪怪的形状周围？](https://github.com/FoxDaxian/memory/issues/5)
+- [webp一种更小的图片格式](https://github.com/FoxDaxian/memory/issues/6)
+- [怎么只用css来做一个input验证？](https://github.com/FoxDaxian/memory/issues/7)
+- [margin:0 auto;为什么可以让元素居中？](https://github.com/FoxDaxian/memory/issues/8)
+- [我要用js编译js！](https://github.com/FoxDaxian/memory/issues/9)
+- [打死不用mvvm框架！](https://github.com/FoxDaxian/memory/issues/10)
