@@ -9,3 +9,5 @@
 - [margin:0 auto;为什么可以让元素居中？](https://github.com/FoxDaxian/memory/issues/8)
 - [我要用js编译js！](https://github.com/FoxDaxian/memory/issues/9)
 - [打死不用mvvm框架！](https://github.com/FoxDaxian/memory/issues/10)
+- [js模块的前生今世](https://github.com/FoxDaxian/memory/issues/11)
+
