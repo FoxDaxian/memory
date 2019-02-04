@@ -10,4 +10,5 @@
 - [我要用js编译js！](https://github.com/FoxDaxian/memory/issues/9)
 - [打死不用mvvm框架！](https://github.com/FoxDaxian/memory/issues/10)
 - [js模块的前生今世](https://github.com/FoxDaxian/memory/issues/11)
+- [用高斯模糊提高图片的加载体验](https://github.com/FoxDaxian/memory/issues/12)
 
