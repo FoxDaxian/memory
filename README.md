@@ -11,4 +11,5 @@
 - [打死不用mvvm框架！](https://github.com/FoxDaxian/memory/issues/10)
 - [js模块的前生今世](https://github.com/FoxDaxian/memory/issues/11)
 - [用高斯模糊提高图片的加载体验](https://github.com/FoxDaxian/memory/issues/12)
+- [了解一下浏览器内核？](https://github.com/FoxDaxian/memory/issues/13)
 
