@@ -12,4 +12,7 @@
 - [js模块的前生今世](https://github.com/FoxDaxian/memory/issues/11)
 - [用高斯模糊提高图片的加载体验](https://github.com/FoxDaxian/memory/issues/12)
 - [了解一下浏览器内核？](https://github.com/FoxDaxian/memory/issues/13)
+- [稀疏数组的各数组方法的表现形式](https://github.com/FoxDaxian/memory/issues/14)
+
+
 
