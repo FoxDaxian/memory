@@ -16,6 +16,7 @@
 - [tapable简单介绍](https://github.com/FoxDaxian/memory/issues/15)
 - [用骨架图提高用户体验](https://github.com/FoxDaxian/memory/issues/16)
 - [RGB与HSL的相互转换](https://github.com/FoxDaxian/memory/issues/17)
+- [微信小程序相关](https://github.com/FoxDaxian/memory/issues/18)
 
 
 
