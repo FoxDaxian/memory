@@ -18,7 +18,8 @@
 - [RGB与HSL的相互转换](https://github.com/FoxDaxian/memory/issues/17)
 - [微信小程序相关](https://github.com/FoxDaxian/memory/issues/18)
 - [electron](https://github.com/FoxDaxian/memory/issues/19)
-
+- [看看proxy的一些骚操作](https://github.com/FoxDaxian/memory/issues/20)
+- [flutter是嘛？](https://github.com/FoxDaxian/memory/issues/22)
 
 
 
