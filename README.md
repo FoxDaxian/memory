@@ -19,7 +19,9 @@
 - [微信小程序相关](https://github.com/FoxDaxian/memory/issues/18)
 - [electron](https://github.com/FoxDaxian/memory/issues/19)
 - [看看proxy的一些骚操作](https://github.com/FoxDaxian/memory/issues/20)
+- [长列表无限滚动](https://github.com/FoxDaxian/memory/issues/21)
 - [flutter是嘛？](https://github.com/FoxDaxian/memory/issues/22)
+
 
 
 
