@@ -23,6 +23,8 @@
 - [flutter是嘛？](https://github.com/FoxDaxian/memory/issues/22)
 - [还是把你写了。。。](https://github.com/FoxDaxian/memory/issues/24)
 - [referer](https://github.com/FoxDaxian/memory/issues/25)
+- [微信分享实战](https://github.com/FoxDaxian/memory/issues/26)
+- [vue原理分析图](https://github.com/FoxDaxian/memory/issues/27)
 
 
 
