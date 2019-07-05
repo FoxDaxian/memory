@@ -13,8 +13,7 @@ cache:
 
 sudo: false
 
-install:
+before_script:
     - sh install.sh
-
 script:
     - sh deploy.sh
