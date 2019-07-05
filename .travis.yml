@@ -1,16 +1,21 @@
+branches:
+    only:
+        - master
+
 language: node_js
+
 node_js:
-    - "8"
-cache:
-  directories:
-  - ~/.npm
-  - node_modules
-  
-before_install:
-    - npm install -g hexo
+    - '8'
 
-install:
-    - npm install
 
+before_script:
+    - sh install.sh
+    
 script:
+    - ls -l
+    - hexo clean
     - hexo generate
+    - mv ./public blog
+    - ls -l ./blog
+    - echo '结束'
+
