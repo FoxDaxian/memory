@@ -80,5 +80,5 @@ theme: landscape
 deploy:
     type: git
     repo: https://github.com/FoxDaxian/memory.git
-    repo: gh-pages
-    branch: hexo部署
+    branch: gh-pages
+    message: hexo部署
