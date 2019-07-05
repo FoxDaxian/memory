@@ -1,6 +1,10 @@
-if [ -n `which hexo`]; then
-    echo 'hexo exist'
+if which hexo 2>/dev/null; then
+  echo "hexo exists!"
 else
-    echo 'hexo not exist'
-    npm i hexo-cli -g
+  echo "nope, no hexo installed."
 fi
+
+cd ./blog
+hexo generate
+mv ./public blog
+ll ./blog
