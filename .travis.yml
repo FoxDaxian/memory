@@ -1,24 +1,16 @@
-branches:
-    only:
-        - master
-
 language: node_js
-
 node_js:
-    - '10'
-
-sudo: false
-
+    - "8"
+cache:
+  directories:
+  - ~/.npm
+  - node_modules
+  
 before_install:
-    - sh install.sh
-    
-install:
-    - echo '进入blog目录'
-    - ls -l
-    - cd ./blog
-    - hexo clean
-    - hexo generate
-    - mv ./public blog
-    - ls -l ./blog
-    - echo '结束'
+    - npm install -g hexo
 
+install:
+    - npm install
+
+script:
+    - hexo generate

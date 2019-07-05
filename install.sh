@@ -1,3 +1,4 @@
+cd ./blog
 if which hexo>/dev/null; then
   echo "hexo存在!"
 else
