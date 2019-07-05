@@ -10,7 +10,6 @@ node_js:
 sudo: false
 
 install:
-  - node -v
 
 script:
   - sh deploy.sh
