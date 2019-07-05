@@ -14,6 +14,11 @@ cache:
 sudo: false
 
 before_script:
-    - sh install.sh
+    - npm install hexo-cli -g
 script:
-    - sh deploy.sh
+    - cd ./blog
+    - hexo clean
+    - hexo generate
+    - mv ./public blog
+    - ll ./blog
+
