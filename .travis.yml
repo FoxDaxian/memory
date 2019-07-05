@@ -12,6 +12,9 @@ node_js:
 
 before_install:
     - sh install.sh
+
+install:
+    - npm install
     
 script:
     - ls -l
