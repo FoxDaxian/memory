@@ -1,31 +1,34 @@
 branches:
     only:
         - master
-
 language: node_js
-
-
 node_js:
     - '8'
-
 cache:
     directories:
         - node_modules
-
 before_install:
+    - openssl aes-256-cbc -K $encrypted_5d973c246188_key -iv $encrypted_5d973c246188_iv
+      -in .travis/id_rsa.enc -out ~\/.ssh/id_rsa -d
+    # Set the permission of the key
+    - chmod 600 ~/.ssh/id_rsa
+    # Start SSH agent
+    - eval $(ssh-agent)
+    # Add the private key to the system
+    - ssh-add ~/.ssh/id_rsa
+    # Copy SSH config
+    - cp .travis/ssh_config ~/.ssh/config
+    - git config user.name 'Foxdaxian'
+    - git config user.email '945039036@qq.com'
     - sh install.sh
-
 install:
     - cd ./blog
     - npm install
-
 script:
     - ls -l
     - cd ./blog
     - ls -l
     - hexo clean
     - hexo generate
-    - git config user.name 'Foxdaxian'
-    - git config user.email '945039036@qq.com'
     - hexo deploy
     - echo '结束'
