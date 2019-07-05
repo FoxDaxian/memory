@@ -1,19 +1,20 @@
 branches:
-  only:
-    - master
+    only:
+        - master
 
 language: node_js
 
 node_js:
-  - "10"
+    - '10'
 
 cache:
     directories:
         - node_modules
-        
+
 sudo: false
 
 install:
+    - sh install.sh
 
 script:
-  - sh deploy.sh
+    - sh deploy.sh

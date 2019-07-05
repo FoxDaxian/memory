@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/FoxDaxian/memory/issues"
   },
-  "homepage": "https://github.com/FoxDaxian/memory#readme"
+  "homepage": "https://github.com/FoxDaxian/memory#readme",
+  "devDependencies": {
+    "hexo-cli": "^2.0.0"
+  }
 }
