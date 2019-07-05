@@ -5,7 +5,11 @@ else
   npm i hexo-cli -g
 fi
 
+
+a=$(npm root -g)
+ls -l $a
+
 cd ./blog
-hexo generate
+$a/bin/hexo generate
 mv ./public blog
 ll ./blog
