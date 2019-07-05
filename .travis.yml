@@ -15,8 +15,8 @@ before_install:
     
 script:
     - ls -l
-    - hexo-cli clean
-    - hexo-cli generate
+    - hexo clean
+    - hexo generate
     - mv ./public blog
     - ls -l ./blog
     - echo '结束'
