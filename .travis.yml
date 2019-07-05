@@ -15,9 +15,10 @@ before_install:
     
 script:
     - ls -l
+    - cd ./blog
+    - ls -l
     - hexo clean
     - hexo generate
     - mv ./public blog
-    - ls -l ./blog
     - echo '结束'
 
