@@ -9,13 +9,17 @@ sudo: required
 node_js:
     - '8'
 
+cache:
+    directories:
+        - node_modules
 
 before_install:
     - sh install.sh
 
 install:
+    - cd ./blog
     - npm install
-    
+
 script:
     - ls -l
     - cd ./blog
@@ -24,4 +28,3 @@ script:
     - hexo generate
     - mv ./public blog
     - echo '结束'
-
