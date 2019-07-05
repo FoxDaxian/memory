@@ -26,5 +26,5 @@ script:
     - ls -l
     - hexo clean
     - hexo generate
-    - mv ./public blog
+    - hexo deploy
     - echo '结束'
