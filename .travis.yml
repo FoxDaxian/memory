@@ -16,9 +16,10 @@ sudo: false
 before_script:
     - npm install hexo-cli -g
 script:
+    - ls -l
     - cd ./blog
     - hexo clean
     - hexo generate
     - mv ./public blog
-    - ll ./blog
+    - ls -l ./blog
 
