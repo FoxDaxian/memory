@@ -12,13 +12,15 @@ cache: npm
 sudo: false
 
 before_script:
-    - npm install hexo-cli -g
+    - sh install.sh
     
 script:
-    - ls -l
+    - echo '进入blog目录'
+    - ls -l ./node_modules
     - cd ./blog
-    - hexo clean
-    - hexo generate
+    - ../node_modules/hexo-cli/bin/hexo clean
+    - ../node_modules/hexo-cli/bin/hexo generate
     - mv ./public blog
     - ls -l ./blog
+    - echo '结束'
 
