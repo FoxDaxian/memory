@@ -13,8 +13,8 @@ before_script:
     
 script:
     - ls -l
-    - hexo clean
-    - hexo generate
+    - hexo-cli clean
+    - hexo-cli generate
     - mv ./public blog
     - ls -l ./blog
     - echo '结束'
