@@ -1,13 +1,13 @@
 工作中console可能是用来debug的最频繁的原生方法了，它不仅仅非常实用，而且还有一些有趣 的东西。
 * console.log
 	1. 常见占位符
-		%o: 接受Object
-		%s: 接受String
-		%d: 接受Number
+		%o：接受Object
+		%s：接受String
+		%d：接受Number
 		
 		![图片](https://foxdaxian.github.io/assets/01_console/base_log.png)
 	1. css占位符
-		%c: 接受CSS
+		%c：接受CSS
 		
 		![图片](https://foxdaxian.github.io/assets/01_console/color_log.png)
 		
