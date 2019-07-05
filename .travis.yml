@@ -13,4 +13,4 @@ install:
   - node -v
 
 script:
-  - npm -v
+  - sh deploy.sh
