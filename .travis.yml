@@ -9,10 +9,10 @@ node_js:
 
 sudo: false
 
-before_script:
+before_install:
     - sh install.sh
     
-script:
+install:
     - echo '进入blog目录'
     - ls -l
     - cd ./blog
