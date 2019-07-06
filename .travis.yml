@@ -8,14 +8,16 @@ cache:
     directories:
         - node_modules
 before_install:
+    # mac下的ssh是在：~/.ssh/
+    # window下的ssh实在：C:\Users\1\.ssh\
     - openssl aes-256-cbc -K $encrypted_5d973c246188_key -iv $encrypted_5d973c246188_iv
-      -in .travis/id_rsa.enc -out ~\/id_rsa -d
+      -in .travis/id_rsa.enc -out C:\/Users\/1\/.ssh\/id_rsa -d
     # Set the permission of the key
-    - chmod 600 ~/id_rsa
+    - chmod 600 C:\/Users\/1\/.ssh\/
     # Start SSH agent
     - eval $(ssh-agent)
     # Add the private key to the system
-    - ssh-add ~/id_rsa
+    - ssh-add C:\/Users\/1\/.ssh\/id_rsa
     # Copy SSH config
     - cp .travis/ssh_config ~/config
     - git config user.name 'Foxdaxian'
