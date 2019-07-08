@@ -4,7 +4,7 @@
 
 # Site
 title: fox的博客
-subtitle: 别说，去做
+subtitle: 敢说，敢做
 description: 遇到好玩的，稀奇的，新鲜的，记录下来，分享出去。
 keywords: 博客 分享
 author: FoxDaxian
@@ -73,7 +73,7 @@ pagination_dir: page
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: ad
+theme: next
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
