@@ -13,8 +13,6 @@ env:
         - secure: 'Mi9vCHjDEgSqitoSnp45rHAeM5qoMXS21pTgUZHN3lwq+FzwrzH6ZmPlug59o/NukWq/vSV5hmUcKEWmw0yaUZWiaEkHh583+HuYS9btbxmfwum85h3n6wylDNZTg3t9+kyagGxef1mUlwzSK8DuKL4G2+pXCi3TMbLCIhBIn4qEW+WnS5BhhfGc/yLRboeG21q3pA7W9ac+B2MOApfIBAX6VaSnm0/65USrCq9K5uUivQ2Du2XsqxcNGiLVQvjEdRE+AQWeSQQCrTguV+zEayp0Cp1juUWkLNpc5Re0LM4Pal0zxOFDGIxfhyIpHHZXSboV5EurH0FbQclxWw2mXIwyX0atGIIElUKvQcZsjVh7Nkp4lDWGDvv388wFSUuvHPWoxKLILAYwEDtHZ8a/RNidOeaVS3V6nx/fCJPmQ+ziPADj6Z3fbKywoxRs471AufxcDVUN3pa537eOrWzNjKXlvX+EaBvN/bxxpkZbgUytljIjdb/RLvWmFJGJ1B8tuw7BQ5Xi99bnk3QO5NLRFC4C0L3uOKGv6o5LdXpc86phQyrkX7dd+4KrTSuy5GlkUoAeB0hGn+UgqhE7jmWuNArXrrIep4y7k1viqDnnYGFx3pJMhUNDs341OE+wSPZhNvQTOE6R9W+cnqjCdEkEmpFCFmnHA77sjJ450QIkJEY='
 
 before_install:
-    - git config user.name 'Foxdaxian'
-    - git config user.email '945039036@qq.com'
     - sh install.sh
 install:
     - cd ./blog
@@ -24,5 +22,10 @@ script:
     - hexo clean
     - hexo generate
     - ls -l
-    - hexo deploy
-    - echo '结束'
+    - git init
+    - git config user.name "Foxdaxian"
+    - git config user.email "945039036@qq.com"
+    - git add .
+    - git commit -m "Update docs"
+    - git push -f "https://${GH_TOKEN}@${GH_REF}" master:gh-pages
+    - echo '完成'
