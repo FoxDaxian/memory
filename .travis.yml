@@ -21,8 +21,8 @@ install:
     - npm install
 script:
     - cd ./blog
-    - ls -l
     - hexo clean
     - hexo generate
+    - ls -l
     - hexo deploy
     - echo '结束'
