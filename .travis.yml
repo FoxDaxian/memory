@@ -7,12 +7,14 @@ node_js:
 cache:
     directories:
         - node_modules
-env:
-    global:
-        - GH_REF: github.com/FoxDaxian/memory.git
-        - secure: 'Mi9vCHjDEgSqitoSnp45rHAeM5qoMXS21pTgUZHN3lwq+FzwrzH6ZmPlug59o/NukWq/vSV5hmUcKEWmw0yaUZWiaEkHh583+HuYS9btbxmfwum85h3n6wylDNZTg3t9+kyagGxef1mUlwzSK8DuKL4G2+pXCi3TMbLCIhBIn4qEW+WnS5BhhfGc/yLRboeG21q3pA7W9ac+B2MOApfIBAX6VaSnm0/65USrCq9K5uUivQ2Du2XsqxcNGiLVQvjEdRE+AQWeSQQCrTguV+zEayp0Cp1juUWkLNpc5Re0LM4Pal0zxOFDGIxfhyIpHHZXSboV5EurH0FbQclxWw2mXIwyX0atGIIElUKvQcZsjVh7Nkp4lDWGDvv388wFSUuvHPWoxKLILAYwEDtHZ8a/RNidOeaVS3V6nx/fCJPmQ+ziPADj6Z3fbKywoxRs471AufxcDVUN3pa537eOrWzNjKXlvX+EaBvN/bxxpkZbgUytljIjdb/RLvWmFJGJ1B8tuw7BQ5Xi99bnk3QO5NLRFC4C0L3uOKGv6o5LdXpc86phQyrkX7dd+4KrTSuy5GlkUoAeB0hGn+UgqhE7jmWuNArXrrIep4y7k1viqDnnYGFx3pJMhUNDs341OE+wSPZhNvQTOE6R9W+cnqjCdEkEmpFCFmnHA77sjJ450QIkJEY='
-
 before_install:
+    - openssl aes-256-cbc -K $encrypted_5d973c246188_key -iv $encrypted_5d973c246188_iv
+      -in deploy_rsa.enc -out ~/.ssh_travis/deploy_rsa -d
+    - chmod 600 ~/.ssh/deploy_rsa
+    - eval "$(ssh-agent -s)"
+    - ssh-add ~/.ssh/deploy_rsa
+    - git config --global user.name "FoxDaxian"
+    - git config --global user.email "945039036@qq.com"
     - sh install.sh
 install:
     - cd ./blog
@@ -24,8 +26,8 @@ script:
     - cd ./public
     - ls -l
     - git init
-    - git config user.name "Foxdaxian"
-    - git config user.email "945039036@qq.com"
+    - git config --global user.name "FoxDaxian"
+    - git config --global user.email "945039036@qq.com"
     - git add .
     - git commit -m "Update docs"
     - git push -f "https://${GH_TOKEN}@${GH_REF}" master:gh-pages
