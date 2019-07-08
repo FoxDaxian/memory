@@ -1,6 +1,6 @@
 ---
 title: console介绍
-tags: console
+tags: frontend
 categories: 介绍
 ---
 
