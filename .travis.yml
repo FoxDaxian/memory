@@ -9,8 +9,8 @@ cache:
         - node_modules
 before_install:
     - openssl aes-256-cbc -K $encrypted_5d973c246188_key -iv $encrypted_5d973c246188_iv
-    - mkdir ~/.ssh_travis/
       -in ./deploy_rsa.enc -out ~/.ssh_travis/deploy_rsa -d
+    - mkdir ~/.ssh_travis/
     - chmod 600 ~/.ssh_travis/deploy_rsa
     - eval "$(ssh-agent -s)"
     - ssh-add ~/.ssh_travis/deploy_rsa
