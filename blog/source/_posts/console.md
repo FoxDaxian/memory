@@ -1,4 +1,8 @@
-# 关于console.log
+---
+title: console介绍
+tags: console
+categories: 介绍
+---
 
 工作中console可能是用来debug的最频繁的原生方法了，它不仅仅非常实用，而且还有一些有趣的东西。
 * console.log
