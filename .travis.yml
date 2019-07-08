@@ -28,5 +28,5 @@ script:
     - git config --global user.email "945039036@qq.com"
     - git add .
     - git commit -m "Update docs"
-    - git push master:gh-pages
+    - git push -f git@github.com:FoxDaxian/memory.git master:gh-pages
     - echo '完成'
