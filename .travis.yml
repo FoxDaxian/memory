@@ -14,14 +14,11 @@ before_install:
     - chmod 600 ~/.ssh_travis/deploy_rsa
     - eval "$(ssh-agent -s)"
     - ssh-add ~/.ssh_travis/deploy_rsa
-    - git config --global user.name "FoxDaxian"
-    - git config --global user.email "945039036@qq.com"
     - sh install.sh
 install:
     - cd ./blog
     - npm install
 script:
-    - cd ./blog
     - hexo clean
     - hexo generate
     - cd ./public
@@ -31,5 +28,5 @@ script:
     - git config --global user.email "945039036@qq.com"
     - git add .
     - git commit -m "Update docs"
-    - git push -f "https://${GH_TOKEN}@${GH_REF}" master:gh-pages
+    - git push -f git@github.com:FoxDaxian/memory.git master:gh-pages
     - echo '完成'
