@@ -240,4 +240,6 @@ import 适配的 ejs 和 cjs，会根据 __esModule 进行导出的判断，返�
 
 
 
+#### 小提示
 
+类似这种的代码 (0, foo.bar)() 相当于 foo.bar.call(winodw|global|this)  改变执行时的上下文环境
