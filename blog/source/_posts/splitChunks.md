@@ -19,8 +19,8 @@ chunk-d: angular 其他组件
 
 ##### 产出
 
-vendors~chunk-a~chunk-b: react react-dom
-vendors~chunk-c~chunk-d: angular
+vendors-chunk-a-chunk-b: react react-dom
+vendors-chunk-c-chunk-d: angular
 chunk-a 至 chunk-d: 对应的其他组件
 
 
@@ -34,8 +34,8 @@ chunk-c: react react-dom lodash 其他组件
 
 ##### 产出
 
-vendors~chunk-a~chunk-b~chunk-c: react react-dom
-vendors~chunk-b~chunk-c: lodash
+vendors-chunk-a-chunk-b-chunk-c: react react-dom
+vendors-chunk-b-chunk-c: lodash
 chunk-a 至 chunk-c: 对应的其他组件
 
 ### 模块
@@ -50,8 +50,8 @@ chunk-c: vue 其他组件 shared组件
 
 ##### 产出
 
-vendors~chunk-a~chunk-b~chunk-c: vue
-commons~chunk-a~chunk-b~chunk-c: shared组件
+vendors-chunk-a-chunk-b-chunk-c: vue
+commons-chunk-a-chunk-b-chunk-c: shared组件
 chunk-a 至 chunk-c: 对应的其他组件
 
 如果shared提交小于30kb，webpack不会特意提出来，webpack认为如果仅仅为了减少下载体积的话，这样做是不值得的。
@@ -67,10 +67,10 @@ chunk-d: angular 其他组件 angular组件
 
 ##### 产出
 
-vendors~chunk-a~chunk-b~chunk-c: react react-dom
-vendors~chunk-b~chunk-c~chunk-d: angular
-commons~chunk-a~chunk-c: react组件
-commons~chunk-c~chunk-d: angular组件
+vendors-chunk-a-chunk-b-chunk-c: react react-dom
+vendors-chunk-b-chunk-c-chunk-d: angular
+commons-chunk-a-chunk-c: react组件
+commons-chunk-c-chunk-d: angular组件
 chunk-a 至 chunk-d: 对应的其他组件
 
 
