@@ -1,5 +1,5 @@
 ---
-title:  qps 和 tps
+title:  qps和tps
 tags: backend
 categories: 原理
 ---
