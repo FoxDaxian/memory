@@ -1,3 +1,4 @@
+## 所有文章全部移步至 [这里](https://foxdaxian.github.io/memory/)
 ### 前端杂谈，尽量每周更新:)
 
 - [了解一下console吧](https://github.com/FoxDaxian/memory/issues/1)
