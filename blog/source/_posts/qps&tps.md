@@ -1,7 +1,7 @@
 ---
 title:  qps 和 tps
 tags: backend
-categories: 概念介绍
+categories: 原理
 ---
 
 ### 几个概念
