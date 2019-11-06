@@ -17,6 +17,18 @@ categories: 效率
 ### demo
 
 ```javascript
+// .prettierrc
+{
+    "trailingComma": "none",
+    "tabWidth": 4,
+    "semi": true,
+    "singleQuote": true,
+    "jsxSingleQuote": true,
+    "bracketSpacing": false
+}
+```
+
+```javascript
 "scripts": {
     "lint": "./node_modules/.bin/eslint .",
     "format": "./node_modules/.bin/prettier-eslint --write \"utils/**/*.js\" \"components/**/*.?(vue|js)\""
