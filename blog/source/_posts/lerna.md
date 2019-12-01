@@ -13,6 +13,7 @@ categories: 介绍
 于是就这个线索去研究了一下，发下这是用的 lerna + yarn 的架构，不仅vue，包括jest，babel等都是用的这类架构，他们有相同的前缀，比如@babel/xxx，不过这个前缀(scope)是需要付费的。
 
 lerna有什么优点呢？
+
 - 分离一个大型的codebase到多个小的孤立或者公共的repo
 - 可以统一管理版本号，一键发布,自动生成changelog([lerna publish](https://github.com/lerna/lerna/blob/master/commands/publish#readme))
 - 一键安装依赖，包括link([lerna bootstrap](https://github.com/lerna/lerna/blob/master/commands/bootstrap#readme))
@@ -65,6 +66,7 @@ lerna有什么优点呢？
 </div>
 
 哈哈哈哈，开个玩笑，不过lerna的初始工作就好了，剩下的就是安装依赖啊，写代码啊，发布啊。用指令表示就是：
+
 - lerna bootstrap(或者增加postinstall hooks自动执行)
 - 写代码
 - lerna version 指定版本
