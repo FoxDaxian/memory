@@ -1,5 +1,4 @@
-## 所有文章全部移步至 [这里](https://foxdaxian.github.io/memory/)
-### [正在逐步迁移cnblogs - 更好的阅读体验](https://www.cnblogs.com/xiaoyuxy/) 
+## 所有文章全部移步至 [这里](https://www.cnblogs.com/xiaoyuxy/)
 
 ### 前端杂谈，尽量每周更新:)
 
