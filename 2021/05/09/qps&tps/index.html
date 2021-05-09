@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/memory/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/memory/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/memory/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/memory/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/memory/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/memory/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/memory/',
+    scheme: 'Muse',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="几个概念 吞吐率(RPS)  计算公式: 吞吐率 = 总请求数 / 处理这些请求的总完成时间 最大吞吐率(QPS)  计算公式: qps = 请求查询数 / 秒  每秒查询率QPS是对一个特定的查询服务器在规定时间内所处理流量多少的衡量标准 并发连接数  就是服务器某个时刻所接受的所有请求数目 并发用户数  一个用户可能产生多个回话，所以并发用户数和并发连接数并不重复，并发用户数是指服务器某个时刻">
+<meta name="keywords" content="backend">
+<meta property="og:type" content="article">
+<meta property="og:title" content="qps和tps">
+<meta property="og:url" content="http://yoursite.com/2021/05/09/qps&tps/index.html">
+<meta property="og:site_name" content="fox的博客">
+<meta property="og:description" content="几个概念 吞吐率(RPS)  计算公式: 吞吐率 = 总请求数 / 处理这些请求的总完成时间 最大吞吐率(QPS)  计算公式: qps = 请求查询数 / 秒  每秒查询率QPS是对一个特定的查询服务器在规定时间内所处理流量多少的衡量标准 并发连接数  就是服务器某个时刻所接受的所有请求数目 并发用户数  一个用户可能产生多个回话，所以并发用户数和并发连接数并不重复，并发用户数是指服务器某个时刻">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2021-05-09T23:37:00.845Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="qps和tps">
+<meta name="twitter:description" content="几个概念 吞吐率(RPS)  计算公式: 吞吐率 = 总请求数 / 处理这些请求的总完成时间 最大吞吐率(QPS)  计算公式: qps = 请求查询数 / 秒  每秒查询率QPS是对一个特定的查询服务器在规定时间内所处理流量多少的衡量标准 并发连接数  就是服务器某个时刻所接受的所有请求数目 并发用户数  一个用户可能产生多个回话，所以并发用户数和并发连接数并不重复，并发用户数是指服务器某个时刻">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2021/05/09/qps&tps/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>qps和tps | fox的博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/memory/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">fox的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">github地址 -> https://github.com/FoxDaxian</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/memory/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/memory/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/memory/2021/05/09/qps&tps/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="FoxDaxian">
+      <meta itemprop="description" content="遇到好玩的，稀奇的，新鲜的，记录下来，分享出去。">
+      <meta itemprop="image" content="/memory/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fox的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">qps和tps
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2021-05-09 23:37:00" itemprop="dateCreated datePublished" datetime="2021-05-09T23:37:00+00:00">2021-05-09</time>
+            </span>
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/memory/categories/原理/" itemprop="url" rel="index"><span itemprop="name">原理</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="几个概念"><a href="#几个概念" class="headerlink" title="几个概念"></a>几个概念</h3><ul>
+<li>吞吐率(RPS)<br>  计算公式: 吞吐率 = 总请求数 / 处理这些请求的总完成时间</li>
+<li>最大吞吐率(QPS)<br>  计算公式: qps = 请求查询数 / 秒<br>  每秒查询率QPS是对一个特定的查询服务器在规定时间内所处理流量多少的衡量标准</li>
+<li>并发连接数<br>  就是服务器某个时刻所接受的所有请求数目</li>
+<li>并发用户数<br>  一个用户可能产生多个回话，所以并发用户数和并发连接数并不重复，并发用户数是指服务器某个时刻所能接受的用户数（类似uv）</li>
+<li>TPS(每秒传输的事物数)<br>  TPS也就是单位时间内，服务器能处理的最大事务数<br>  一个事务是指一个客户机想服务器发送请求，然后服务器做出反应并进行响应的过程</li>
+</ul>
+<h3 id="概念浅析"><a href="#概念浅析" class="headerlink" title="概念浅析"></a>概念浅析</h3><ul>
+<li>QPS: Queries Per Second，意思是 每秒查询率，是一台服务器每秒能够响应的查询次数，是对一个特定的查询服务器在规定时间内所处理流量多少的衡量标准。</li>
+<li>TPS: Transactions Per Second的缩写，也就是事物数/每秒，这个完整的事务包括了用户请求服务器、服务器内部处理、服务器返回信息给用户三个过程。它是软件测试结果的衡量单位，一个事务是指一个客户端，想服务器发送请求，然后服务器做出反应的过程。客户端发送请求时开始计时，收到服务器响应后，结束计时，以此来计算使用的时间和完成的事务个数，最终利用这些信息来估计得分。</li>
+</ul>
+<h3 id="计算QPS"><a href="#计算QPS" class="headerlink" title="计算QPS"></a>计算QPS</h3><ul>
+<li>原理：每天80%的访问集中在20%的时间里，这20%的时间叫做峰值时间。</li>
+<li>公式: (总pv数 * 80%) / (每天秒数 * 20%) = 峰值时间每秒请求数(QPS)</li>
+<li>机器：峰值时间每秒QPS / 单台机器的QPS = 需要的机器数量<br>  问： 每天300w PV 的单台机器上，这台机器需要多少QPS<br>  答： (3000000 * 0.8) / ( 86400 * 0.2) = 139(QPS) 至少需要 139 QPS<br>  问： 如果一台机器的QPS是58，需要几台机器支持<br>  答： 139 / 58 = 3 至少三台</li>
+</ul>
+<p><a href="https://juejin.im/post/5b827cbbe51d4538c021f2da" target="_blank" rel="noopener">如何对node进行评测、压测</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/memory/tags/backend/" rel="tag"># backend</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/memory/2021/05/09/readStream/" rel="next" title="node可读流">
+                <i class="fa fa-chevron-left"></i> node可读流
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/memory/2021/05/09/ast/" rel="prev" title="js <=> ast">
+                js <=> ast <i class="fa fa-chevron-right"></i>
+              </=></a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">FoxDaxian</p>
+              <div class="site-description motion-element" itemprop="description">遇到好玩的，稀奇的，新鲜的，记录下来，分享出去。</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/memory/archives/">
+                
+                    <span class="site-state-item-count">40</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">categories</span>
+                  
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#几个概念"><span class="nav-number">1.</span> <span class="nav-text">几个概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#概念浅析"><span class="nav-number">2.</span> <span class="nav-text">概念浅析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#计算QPS"><span class="nav-number">3.</span> <span class="nav-text">计算QPS</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">FoxDaxian</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/memory/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/memory/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/memory/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/memory/js/utils.js?v=7.2.0"></script>
+
+  <script src="/memory/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/memory/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+  
+  <script src="/memory/js/scrollspy.js?v=7.2.0"></script>
+<script src="/memory/js/post-details.js?v=7.2.0"></script>
+
+
+
+  
+
+
+  <script src="/memory/js/next-boot.js?v=7.2.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

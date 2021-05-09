@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/memory/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/memory/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/memory/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/memory/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/memory/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/memory/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/memory/',
+    scheme: 'Muse',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="webpack4放弃了 commonsChunkPlugin，使用更方便灵活智能的 splitChunks 来做分包的操作。 下面有几个例子，并且我们假设所有的chunks大小至少为30kb(采用splitChunks默认配置) vendors入口chunk-a: react react-dom 其他组件chunk-b: react react-dom 其他组件chunk-c: angular 其">
+<meta name="keywords" content="frontend">
+<meta property="og:type" content="article">
+<meta property="og:title" content="webpack4分包方案">
+<meta property="og:url" content="http://yoursite.com/2021/05/09/splitChunks/index.html">
+<meta property="og:site_name" content="fox的博客">
+<meta property="og:description" content="webpack4放弃了 commonsChunkPlugin，使用更方便灵活智能的 splitChunks 来做分包的操作。 下面有几个例子，并且我们假设所有的chunks大小至少为30kb(采用splitChunks默认配置) vendors入口chunk-a: react react-dom 其他组件chunk-b: react react-dom 其他组件chunk-c: angular 其">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2021-05-09T23:37:00.845Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="webpack4分包方案">
+<meta name="twitter:description" content="webpack4放弃了 commonsChunkPlugin，使用更方便灵活智能的 splitChunks 来做分包的操作。 下面有几个例子，并且我们假设所有的chunks大小至少为30kb(采用splitChunks默认配置) vendors入口chunk-a: react react-dom 其他组件chunk-b: react react-dom 其他组件chunk-c: angular 其">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2021/05/09/splitChunks/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>webpack4分包方案 | fox的博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/memory/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">fox的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">github地址 -> https://github.com/FoxDaxian</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/memory/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/memory/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/memory/2021/05/09/splitChunks/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="FoxDaxian">
+      <meta itemprop="description" content="遇到好玩的，稀奇的，新鲜的，记录下来，分享出去。">
+      <meta itemprop="image" content="/memory/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fox的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">webpack4分包方案
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2021-05-09 23:37:00" itemprop="dateCreated datePublished" datetime="2021-05-09T23:37:00+00:00">2021-05-09</time>
+            </span>
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/memory/categories/经验总结/" itemprop="url" rel="index"><span itemprop="name">经验总结</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>webpack4放弃了 commonsChunkPlugin，使用更方便灵活智能的 splitChunks 来做分包的操作。</p>
+<p>下面有几个例子，并且我们假设所有的chunks大小至少为30kb(采用splitChunks默认配置)</p>
+<h3 id="vendors"><a href="#vendors" class="headerlink" title="vendors"></a>vendors</h3><h5 id="入口"><a href="#入口" class="headerlink" title="入口"></a>入口</h5><p>chunk-a: react react-dom 其他组件<br>chunk-b: react react-dom 其他组件<br>chunk-c: angular 其他组件<br>chunk-d: angular 其他组件</p>
+<h5 id="产出"><a href="#产出" class="headerlink" title="产出"></a>产出</h5><p>vendors-chunk-a-chunk-b: react react-dom<br>vendors-chunk-c-chunk-d: angular<br>chunk-a 至 chunk-d: 对应的其他组件</p>
+<h3 id="重复的vendors"><a href="#重复的vendors" class="headerlink" title="重复的vendors"></a>重复的vendors</h3><h5 id="入口-1"><a href="#入口-1" class="headerlink" title="入口"></a>入口</h5><p>chunk-a: react react-dom 其他组件<br>chunk-b: react react-dom lodash 其他组件<br>chunk-c: react react-dom lodash 其他组件</p>
+<h5 id="产出-1"><a href="#产出-1" class="headerlink" title="产出"></a>产出</h5><p>vendors-chunk-a-chunk-b-chunk-c: react react-dom<br>vendors-chunk-b-chunk-c: lodash<br>chunk-a 至 chunk-c: 对应的其他组件</p>
+<h3 id="模块"><a href="#模块" class="headerlink" title="模块"></a>模块</h3><h5 id="入口-2"><a href="#入口-2" class="headerlink" title="入口"></a>入口</h5><p>chunk-a: vue 其他组件 shared组件<br>chunk-b: vue 其他组件 shared组件<br>chunk-c: vue 其他组件 shared组件</p>
+<p>假设这里的shared体积超过30kb，这时候webpack会创建vendors和commons两个块</p>
+<h5 id="产出-2"><a href="#产出-2" class="headerlink" title="产出"></a>产出</h5><p>vendors-chunk-a-chunk-b-chunk-c: vue<br>commons-chunk-a-chunk-b-chunk-c: shared组件<br>chunk-a 至 chunk-c: 对应的其他组件</p>
+<p>如果shared提交小于30kb，webpack不会特意提出来，webpack认为如果仅仅为了减少下载体积的话，这样做是不值得的。</p>
+<h3 id="多个共享模块"><a href="#多个共享模块" class="headerlink" title="多个共享模块"></a>多个共享模块</h3><h5 id="入口-3"><a href="#入口-3" class="headerlink" title="入口"></a>入口</h5><p>chunk-a: react react-dom 其他组件 react组件<br>chunk-b: react react-dom angular 其他组件<br>chunk-c: react react-dom angular 其他组件 react组件 angular组件<br>chunk-d: angular 其他组件 angular组件</p>
+<h5 id="产出-3"><a href="#产出-3" class="headerlink" title="产出"></a>产出</h5><p>vendors-chunk-a-chunk-b-chunk-c: react react-dom<br>vendors-chunk-b-chunk-c-chunk-d: angular<br>commons-chunk-a-chunk-c: react组件<br>commons-chunk-c-chunk-d: angular组件<br>chunk-a 至 chunk-d: 对应的其他组件</p>
+<h3 id="关于webpack默认配置"><a href="#关于webpack默认配置" class="headerlink" title="关于webpack默认配置"></a>关于webpack默认配置</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">splitChunks: &#123;</span><br><span class="line">    chunks: <span class="string">"async"</span>,</span><br><span class="line">    minSize: <span class="number">30000</span>,</span><br><span class="line">    minChunks: <span class="number">1</span>,</span><br><span class="line">    maxAsyncRequests: <span class="number">5</span>,</span><br><span class="line">    maxInitialRequests: <span class="number">3</span>,</span><br><span class="line">    automaticNameDelimiter: <span class="string">'~'</span>,</span><br><span class="line">    name: <span class="literal">true</span>,</span><br><span class="line">    cacheGroups: &#123;</span><br><span class="line">      vendors: &#123;</span><br><span class="line">          test: <span class="regexp">/[\\/]node_modules[\\/]/</span>,</span><br><span class="line">          priority: <span class="number">-10</span></span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="keyword">default</span>: &#123;</span><br><span class="line">              minChunks: <span class="number">2</span>,</span><br><span class="line">              priority: <span class="number">-20</span>,</span><br><span class="line">              reuseExistingChunk: <span class="literal">true</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>chunks: 表示从哪些chunks里抽取代码，有三个值：<ol>
+<li>initial：初始块，分开打包异步\非异步模块</li>
+<li>async：按需加载块, 类似initial，但是不会把同步引入的模块提取到vendors中</li>
+<li>all：全部块，无视异步\非异步，如果有异步，统一为异步，也就是提取成一个块，而不是放到入口文件打包内容中</li>
+</ol>
+</li>
+</ul>
+<p><a href="https://www.webpackjs.com/api/module-methods/#import-" target="_blank" rel="noopener">通过import()控制模块的一些属性</a></p>
+<p>initial情况下，如果两个入口一个是同步引入，一个是异步引入，那么会分开打包，同步的直接将引入包打到入口文件的打包文件里，异步的会分出单独的块，按需引入<br>all情况下，如果一个异步一个同步，会统一分出一个单独的块，然后引入</p>
+<ul>
+<li>minSize代表最小块大小，如果超出那么则分包，该值为压缩前的。也就是先分包，再压缩</li>
+<li>minchunks表示最小引用次数，默认为1</li>
+<li>maxAsyncRequests: 按需加载时候最大的并行请求数，默认为5</li>
+<li>maxInitialRequests: 一个入口最大的并行请求数，默认为3</li>
+<li>automaticNameDelimiter表示打包后人口文件名之间的连接符</li>
+<li>name表示拆分出来块的名字</li>
+<li>cacheGroups：缓存组，除了上面所有属性外，还包括<ul>
+<li>test：匹配条件，只有满足才会进行相应分包，支持函数 正则 字符串</li>
+<li>priority：执行优先级，默认为0</li>
+<li>reuseExistingChunk：如果当前代码块包含的模块已经存在，那么不在生成重复的块</li>
+</ul>
+</li>
+</ul>
+<h3 id="几种配置示例（依赖优先级priority）"><a href="#几种配置示例（依赖优先级priority）" class="headerlink" title="几种配置示例（依赖优先级priority）"></a>几种配置示例（依赖优先级priority）</h3><h5 id="个人感觉其实只要玩好cacheGroups，就能完成各种各样的分包"><a href="#个人感觉其实只要玩好cacheGroups，就能完成各种各样的分包" class="headerlink" title="个人感觉其实只要玩好cacheGroups，就能完成各种各样的分包"></a>个人感觉其实只要玩好cacheGroups，就能完成各种各样的分包</h5><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 将所有node_modules中应用2次以上的抽成common块</span></span><br><span class="line">optimization: &#123;</span><br><span class="line">  splitChunks: &#123;</span><br><span class="line">    cacheGroups: &#123;</span><br><span class="line">      common: &#123;</span><br><span class="line">        test: <span class="regexp">/[\\/]node_modules[\\/]/</span>,</span><br><span class="line">        name: <span class="string">'common'</span>,</span><br><span class="line">        chunks: <span class="string">'initial'</span>,</span><br><span class="line">        priority: <span class="number">2</span>,</span><br><span class="line">        minChunks: <span class="number">2</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 把所有超过2次的达成common，不局限于node_modules</span></span><br><span class="line">optimization: &#123;</span><br><span class="line">  cacheGroups: &#123;</span><br><span class="line">    common: &#123;</span><br><span class="line">      name: <span class="string">'common'</span>,</span><br><span class="line">      chunks: <span class="string">'initial'</span>,</span><br><span class="line">      priority: <span class="number">2</span>,</span><br><span class="line">      minChunks: <span class="number">2</span>,</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 额外提取react相关基础模块，然后抽取引入超过两次的模块到common</span></span><br><span class="line">optiomization: &#123;</span><br><span class="line">  cacheGroups: &#123;</span><br><span class="line">    reactBase: &#123;</span><br><span class="line">      name: <span class="string">'reactBase'</span>,</span><br><span class="line">      test: <span class="function">(<span class="params"><span class="built_in">module</span></span>) =&gt;</span> &#123;</span><br><span class="line">          <span class="keyword">return</span> <span class="regexp">/react|redux|prop-types/</span>.test(<span class="built_in">module</span>.context);</span><br><span class="line">      &#125;,</span><br><span class="line">      chunks: <span class="string">'initial'</span>,</span><br><span class="line">      priority: <span class="number">10</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    common: &#123;</span><br><span class="line">      name: <span class="string">'common'</span>,</span><br><span class="line">      chunks: <span class="string">'initial'</span>,</span><br><span class="line">      priority: <span class="number">2</span>,</span><br><span class="line">      minChunks: <span class="number">2</span>,</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 如果提取出来的包依然很大，你又想利用好缓存，你可以这样做</span></span><br><span class="line"><span class="comment">// 这样你的每一个node_modules包都是一个chunks，对缓存很友好，会节约很多用户流量，虽然流量已经不之前</span></span><br><span class="line">optimization: &#123;</span><br><span class="line">  cacheGroups: &#123;</span><br><span class="line">    vendor: &#123;</span><br><span class="line">      test: <span class="regexp">/[\\/]node_modules[\\/]/</span>,</span><br><span class="line">      name(<span class="built_in">module</span>) &#123;</span><br><span class="line">        <span class="keyword">const</span> packageName = <span class="built_in">module</span>.context.match(<span class="regexp">/[\\/]node_modules[\\/](.*?)([\\/]|$)/</span>)[<span class="number">1</span>];</span><br><span class="line">        <span class="comment">// 避免服务端不支持@</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">`npm.<span class="subst">$&#123;packageName.replace(<span class="string">'@'</span>, <span class="string">''</span>)&#125;</span>`</span>;</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="相关文章"><a href="#相关文章" class="headerlink" title="相关文章"></a>相关文章</h3><p><a href="https://medium.com/webpack/webpack-4-code-splitting-chunk-graph-and-the-splitchunks-optimization-be739a861366" target="_blank" rel="noopener">Code Splitting, chunk graph and the splitChunks optimization</a><br><a href="https://imweb.io/topic/5b66dd601402769b60847149" target="_blank" rel="noopener">webpack4 splitchunks实践探索</a><br><a href="https://medium.com/dailyjs/webpack-4-splitchunks-plugin-d9fbbe091fd0" target="_blank" rel="noopener">chunks解释</a><br><a href="https://medium.com/hackernoon/the-100-correct-way-to-split-your-chunks-with-webpack-f8a9df5b7758#id_token=eyJhbGciOiJSUzI1NiIsImtpZCI6IjYwZjQwNjBlNThkNzVmZDNmNzBiZWZmODhjNzk0YTc3NTMyN2FhMzEiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJuYmYiOjE1NjYyMTI5OTEsImF1ZCI6IjIxNjI5NjAzNTgzNC1rMWs2cWUwNjBzMnRwMmEyamFtNGxqZGNtczAwc3R0Zy5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsInN1YiI6IjExMTA4NzYzNDY0Nzc3OTk5MDIyNCIsImVtYWlsIjoiOTQ1MDM5MDM2QHFxLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJhenAiOiIyMTYyOTYwMzU4MzQtazFrNnFlMDYwczJ0cDJhMmphbTRsamRjbXMwMHN0dGcuYXBwcy5nb29nbGV1c2VyY29udGVudC5jb20iLCJuYW1lIjoi5Yav5LiW6ZuoIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS8tanVBdFJLck93ZjgvQUFBQUFBQUFBQUkvQUFBQUFBQUFBQUEvQUNIaTNyZkVWU253cW1TSG81LTh1eWQ3Y0J5dnlUSnBuZy9zOTYtYy9waG90by5qcGciLCJnaXZlbl9uYW1lIjoi5LiW6ZuoIiwiZmFtaWx5X25hbWUiOiLlhq8iLCJpYXQiOjE1NjYyMTMyOTEsImV4cCI6MTU2NjIxNjg5MSwianRpIjoiZjhmMzdhZWFjMjA0NTVjMTNkNDU1ZjU2NjYxYjBiZDcwMmViNmNiYiJ9.r4nXLCswsDW8a4TDA4CEDu-8tN2Ez4NMmpKiR4Lw7uPq5ecvKH6fx8IZ-80V3l7P3AZ_hw-37f-6caTJBjiKT_MHLTt_qSSDIlvkhy2DU19X7-JxZfVoBRXgoMuPUJpOUPoak972TB-6w2pXtGxt0Dyk6jc4IKO4DMT1O9YvyiD-gwBggrhoi82DvLeyPLH6tkcav458gfU475J6U1l1p8T8Sk21QZB_ASraptxFTTaQdwGCDxYPGBpyuESmh5F5QTcq81qwb2dnpZN75-nd7FW1rggAaWpVAi4C3WDILR_TwEjkCf_wAv8UfF4fogy4Xr1acHuwNaLc9RoFBJHbNA" target="_blank" rel="noopener">vendors过大的解决方案</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/memory/tags/frontend/" rel="tag"># frontend</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/memory/2021/05/09/tapable/" rel="next" title="tapable简析">
+                <i class="fa fa-chevron-left"></i> tapable简析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/memory/2021/05/09/snabbdom/" rel="prev" title="snabbdom">
+                snabbdom <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">FoxDaxian</p>
+              <div class="site-description motion-element" itemprop="description">遇到好玩的，稀奇的，新鲜的，记录下来，分享出去。</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/memory/archives/">
+                
+                    <span class="site-state-item-count">40</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">categories</span>
+                  
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#vendors"><span class="nav-number">1.</span> <span class="nav-text">vendors</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#入口"><span class="nav-number">1.0.1.</span> <span class="nav-text">入口</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#产出"><span class="nav-number">1.0.2.</span> <span class="nav-text">产出</span></a></li></ol></li></ol><li class="nav-item nav-level-3"><a class="nav-link" href="#重复的vendors"><span class="nav-number">2.</span> <span class="nav-text">重复的vendors</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#入口-1"><span class="nav-number">2.0.1.</span> <span class="nav-text">入口</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#产出-1"><span class="nav-number">2.0.2.</span> <span class="nav-text">产出</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模块"><span class="nav-number">3.</span> <span class="nav-text">模块</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#入口-2"><span class="nav-number">3.0.1.</span> <span class="nav-text">入口</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#产出-2"><span class="nav-number">3.0.2.</span> <span class="nav-text">产出</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多个共享模块"><span class="nav-number">4.</span> <span class="nav-text">多个共享模块</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#入口-3"><span class="nav-number">4.0.1.</span> <span class="nav-text">入口</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#产出-3"><span class="nav-number">4.0.2.</span> <span class="nav-text">产出</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于webpack默认配置"><span class="nav-number">5.</span> <span class="nav-text">关于webpack默认配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#几种配置示例（依赖优先级priority）"><span class="nav-number">6.</span> <span class="nav-text">几种配置示例（依赖优先级priority）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#个人感觉其实只要玩好cacheGroups，就能完成各种各样的分包"><span class="nav-number">6.0.1.</span> <span class="nav-text">个人感觉其实只要玩好cacheGroups，就能完成各种各样的分包</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#相关文章"><span class="nav-number">7.</span> <span class="nav-text">相关文章</span></a></li></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">FoxDaxian</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/memory/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/memory/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/memory/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/memory/js/utils.js?v=7.2.0"></script>
+
+  <script src="/memory/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/memory/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+  
+  <script src="/memory/js/scrollspy.js?v=7.2.0"></script>
+<script src="/memory/js/post-details.js?v=7.2.0"></script>
+
+
+
+  
+
+
+  <script src="/memory/js/next-boot.js?v=7.2.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

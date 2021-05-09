@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/memory/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/memory/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/memory/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/memory/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/memory/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/memory/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/memory/',
+    scheme: 'Muse',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="有段时间没更新博客了，是时候更新一波了。之前不是vue-next出了吗，然后就去学习了一下，发现整个目录不是那么熟悉了，变成这样了:  于是就这个线索去研究了一下，发下这是用的 lerna + yarn 的架构，不仅vue，包括jest，babel等都是用的这类架构，他们有相同的前缀，比如@babel/xxx，不过这个前缀(scope)是需要付费的。 lerna有什么优点呢？  分离一个大型的co">
+<meta name="keywords" content="frendend">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用lerna管理你的项目">
+<meta property="og:url" content="http://yoursite.com/2021/05/09/lerna/index.html">
+<meta property="og:site_name" content="fox的博客">
+<meta property="og:description" content="有段时间没更新博客了，是时候更新一波了。之前不是vue-next出了吗，然后就去学习了一下，发现整个目录不是那么熟悉了，变成这样了:  于是就这个线索去研究了一下，发下这是用的 lerna + yarn 的架构，不仅vue，包括jest，babel等都是用的这类架构，他们有相同的前缀，比如@babel/xxx，不过这个前缀(scope)是需要付费的。 lerna有什么优点呢？  分离一个大型的co">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20191201163148.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20191201163946.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20191201164414.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20191201165050.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20191201165826.png">
+<meta property="og:updated_time" content="2021-05-09T23:37:00.845Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用lerna管理你的项目">
+<meta name="twitter:description" content="有段时间没更新博客了，是时候更新一波了。之前不是vue-next出了吗，然后就去学习了一下，发现整个目录不是那么熟悉了，变成这样了:  于是就这个线索去研究了一下，发下这是用的 lerna + yarn 的架构，不仅vue，包括jest，babel等都是用的这类架构，他们有相同的前缀，比如@babel/xxx，不过这个前缀(scope)是需要付费的。 lerna有什么优点呢？  分离一个大型的co">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20191201163148.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2021/05/09/lerna/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>使用lerna管理你的项目 | fox的博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/memory/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">fox的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">github地址 -> https://github.com/FoxDaxian</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/memory/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/memory/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/memory/2021/05/09/lerna/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="FoxDaxian">
+      <meta itemprop="description" content="遇到好玩的，稀奇的，新鲜的，记录下来，分享出去。">
+      <meta itemprop="image" content="/memory/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fox的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">使用lerna管理你的项目
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2021-05-09 23:37:00" itemprop="dateCreated datePublished" datetime="2021-05-09T23:37:00+00:00">2021-05-09</time>
+            </span>
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/memory/categories/介绍/" itemprop="url" rel="index"><span itemprop="name">介绍</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>有段时间没更新博客了，是时候更新一波了。<br>之前不是vue-next出了吗，然后就去学习了一下，发现整个目录不是那么熟悉了，变成这样了:</p>
+<p><img src="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20191201163148.png" alt></p>
+<p>于是就这个线索去研究了一下，发下这是用的 lerna + yarn 的架构，不仅vue，包括jest，babel等都是用的这类架构，他们有相同的前缀，比如@babel/xxx，不过这个前缀(scope)是需要付费的。</p>
+<p>lerna有什么优点呢？</p>
+<ul>
+<li>分离一个大型的codebase到多个小的孤立或者公共的repo</li>
+<li>可以统一管理版本号，一键发布,自动生成changelog(<a href="https://github.com/lerna/lerna/blob/master/commands/publish#readme" target="_blank" rel="noopener">lerna publish</a>)</li>
+<li>一键安装依赖，包括link(<a href="https://github.com/lerna/lerna/blob/master/commands/bootstrap#readme" target="_blank" rel="noopener">lerna bootstrap</a>)</li>
+<li>目录清晰，像上面vue-next那样。</li>
+</ul>
+<div style="align: center">
+<img src="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20191201163946.jpg">
+</div>
+
+
+<hr>
+<p>所以说！</p>
+<div style="align: center">
+<img src="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20191201164414.jpg">
+</div>
+
+
+<h3 id="开整！！！"><a href="#开整！！！" class="headerlink" title="开整！！！"></a>开整！！！</h3><p>首先使用lerna + yarn来管理我们的npm工作区：<br>所以创建一个空的reop，然后<code>npx lerna init</code>初始化lerna项目，然后左改改右改改，像下面这样，意思是说用yarn替代lerna的工作区定义，然后pkg中指定workspaces，指定private和root，表明别发布我。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// lerna.js</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"version"</span>: <span class="string">"independent"</span>,</span><br><span class="line">    <span class="string">"npmClient"</span>: <span class="string">"yarn"</span>,</span><br><span class="line">    <span class="string">"useWorkspaces"</span>: <span class="literal">true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// package.json</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="string">"name"</span>: <span class="string">"root"</span>,</span><br><span class="line">    <span class="string">"private"</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="string">"workspaces"</span>: [</span><br><span class="line">        <span class="string">"packages/*"</span>,</span><br><span class="line">        <span class="string">"demo"</span></span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<div style="align: center">
+<img src="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20191201165050.png">
+</div>
+
+<p>哈哈哈哈，开个玩笑，不过lerna的初始工作就好了，剩下的就是安装依赖啊，写代码啊，发布啊。用指令表示就是：</p>
+<ul>
+<li>lerna bootstrap(或者增加postinstall hooks自动执行)</li>
+<li>写代码</li>
+<li>lerna version 指定版本</li>
+<li>lerna publish (前需要登录npm，例如: npm login)</li>
+</ul>
+<p>不过，仅仅只有上面这些肯定是不够的，我们还需要增加：</p>
+<ul>
+<li>本地预览</li>
+<li>本地unit测试</li>
+<li>一些自动化脚本</li>
+<li>格式化检查工具</li>
+<li>其他(ts、commitlint、<a href="https://github.com/commitizen/cz-cli" target="_blank" rel="noopener">cz</a>)</li>
+</ul>
+<p>这块就不啰嗦了，直接丢一个<a href="https://github.com/FoxDaxian/oneForAll" target="_blank" rel="noopener">repo: oneForAll</a>供大家参考，欢迎交流哈。<br>目录如下:</p>
+<p><img src="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20191201165826.png" alt></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/memory/tags/frendend/" rel="tag"># frendend</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/memory/2021/05/09/pke/" rel="next" title="package.json 中的字段">
+                <i class="fa fa-chevron-left"></i> package.json 中的字段
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/memory/2021/05/09/koaMiddles/" rel="prev" title="koa 中间件原理">
+                koa 中间件原理 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">FoxDaxian</p>
+              <div class="site-description motion-element" itemprop="description">遇到好玩的，稀奇的，新鲜的，记录下来，分享出去。</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/memory/archives/">
+                
+                    <span class="site-state-item-count">40</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">categories</span>
+                  
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#开整！！！"><span class="nav-number">1.</span> <span class="nav-text">开整！！！</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">FoxDaxian</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/memory/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/memory/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/memory/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/memory/js/utils.js?v=7.2.0"></script>
+
+  <script src="/memory/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/memory/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+  
+  <script src="/memory/js/scrollspy.js?v=7.2.0"></script>
+<script src="/memory/js/post-details.js?v=7.2.0"></script>
+
+
+
+  
+
+
+  <script src="/memory/js/next-boot.js?v=7.2.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

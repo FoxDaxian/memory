@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/memory/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/memory/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/memory/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/memory/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/memory/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/memory/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/memory/',
+    scheme: 'Muse',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="引入wx的npm（weixin-js-sdk）包 判断是否为微信或qq环境 接口请求微信配置相关参数，注意接口传入的参数须和当前分享页的地址相同（不包括#以及后面的） 配置需要的微信jsapi相关信息 wx.ready =&amp;gt; wx.checkJsApi 检查api可行性 判断并调用wx相关方法  12345678910111213141516171819202122232425262728">
+<meta name="keywords" content="frontend">
+<meta property="og:type" content="article">
+<meta property="og:title" content="微信分享功能实战">
+<meta property="og:url" content="http://yoursite.com/2021/05/09/wxShare/index.html">
+<meta property="og:site_name" content="fox的博客">
+<meta property="og:description" content="引入wx的npm（weixin-js-sdk）包 判断是否为微信或qq环境 接口请求微信配置相关参数，注意接口传入的参数须和当前分享页的地址相同（不包括#以及后面的） 配置需要的微信jsapi相关信息 wx.ready =&amp;gt; wx.checkJsApi 检查api可行性 判断并调用wx相关方法  12345678910111213141516171819202122232425262728">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20190702161827.png">
+<meta property="og:updated_time" content="2021-05-09T23:37:00.845Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="微信分享功能实战">
+<meta name="twitter:description" content="引入wx的npm（weixin-js-sdk）包 判断是否为微信或qq环境 接口请求微信配置相关参数，注意接口传入的参数须和当前分享页的地址相同（不包括#以及后面的） 配置需要的微信jsapi相关信息 wx.ready =&amp;gt; wx.checkJsApi 检查api可行性 判断并调用wx相关方法  12345678910111213141516171819202122232425262728">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20190702161827.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2021/05/09/wxShare/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>微信分享功能实战 | fox的博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/memory/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">fox的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">github地址 -> https://github.com/FoxDaxian</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/memory/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/memory/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/memory/2021/05/09/wxShare/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="FoxDaxian">
+      <meta itemprop="description" content="遇到好玩的，稀奇的，新鲜的，记录下来，分享出去。">
+      <meta itemprop="image" content="/memory/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fox的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">微信分享功能实战
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2021-05-09 23:37:00" itemprop="dateCreated datePublished" datetime="2021-05-09T23:37:00+00:00">2021-05-09</time>
+            </span>
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/memory/categories/原理/" itemprop="url" rel="index"><span itemprop="name">原理</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <ol>
+<li>引入wx的npm（weixin-js-sdk）包</li>
+<li>判断是否为微信或qq环境</li>
+<li>接口请求微信配置相关参数，注意接口传入的参数须和当前分享页的地址相同（不包括#以及后面的）</li>
+<li>配置需要的微信jsapi相关信息</li>
+<li>wx.ready =&gt; wx.checkJsApi 检查api可行性</li>
+<li>判断并调用wx<a href="配置内容">相关方法</a></li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> wx <span class="keyword">from</span> <span class="string">'weixin-js-sdk'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> (&#123;分享配置参数&#125; = &#123;&#125;) =&gt; &#123;</span><br><span class="line">    <span class="keyword">if</span> (weixin || qq) &#123;</span><br><span class="line">        getWxConfApi.then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">            <span class="keyword">const</span> wxApiData = &#123;</span><br><span class="line">                forFriend: <span class="string">'updateAppMessageShareData'</span>,</span><br><span class="line">                forGroup: <span class="string">'updateTimelineShareData'</span></span><br><span class="line">            &#125;;</span><br><span class="line">            <span class="keyword">const</span> wxApi = <span class="built_in">Object</span>.values(wxApiData);</span><br><span class="line">            wx.config(&#123;</span><br><span class="line">                debug: process.env.NODE_ENV === <span class="string">'development'</span>,</span><br><span class="line">                appId, <span class="comment">// 必填，公众号的唯一标识</span></span><br><span class="line">                timestamp, <span class="comment">// 必填，生成签名的时间戳</span></span><br><span class="line">                nonceStr, <span class="comment">// 必填，生成签名的随机串</span></span><br><span class="line">                signature, <span class="comment">// 必填，签名</span></span><br><span class="line">                jsApiList: wxApi <span class="comment">// 必填，需要使用的JS接口列表</span></span><br><span class="line">            &#125;);</span><br><span class="line">            wx.ready(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">                wx.checkJsApi(&#123;</span><br><span class="line">                    jsApiList: wxApi,</span><br><span class="line">                    success: <span class="function"><span class="keyword">function</span> (<span class="params">res</span>) </span>&#123;</span><br><span class="line">                        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>, len = wxApi.length; i &lt; len; i++) &#123;</span><br><span class="line">                            <span class="keyword">switch</span> (api检查通过 &amp;&amp; wxApi[i]) &#123;</span><br><span class="line">                                <span class="keyword">case</span> wxApiData.forFriend:</span><br><span class="line">                                    <span class="comment">// 调用分享给朋友wx api</span></span><br><span class="line">                                    <span class="keyword">break</span>;</span><br><span class="line">                                <span class="keyword">case</span> wxApiData.forGroup:</span><br><span class="line">                                    <span class="comment">// 调用分享给朋友圈wx api</span></span><br><span class="line">                                    <span class="keyword">break</span>;</span><br><span class="line">                                <span class="keyword">default</span>:</span><br><span class="line">                                    <span class="built_in">console</span>.log(<span class="string">'部分功能不支持，请使用最新版微信'</span>);</span><br><span class="line">                                    <span class="keyword">break</span>;</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125;);</span><br><span class="line">            wx.error(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">                <span class="built_in">console</span>.log(<span class="string">"配置初始化错误"</span>);</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="微信分享本地测试方法"><a href="#微信分享本地测试方法" class="headerlink" title="微信分享本地测试方法"></a>微信分享本地测试方法</h3><ol>
+<li>获取微信平台安全域名，比如test.com</li>
+<li>修改本地host配置<ol>
+<li>xxx.xxx.xx.xx test.com（xxx.xxx.xx.xx你的ip地址，mac下使用ifconfig | grep “inet “ | grep -v 127.0.0.1获取）</li>
+</ol>
+</li>
+<li>nginx代理test.com:80 =&gt; localhost:port(你的本地服务，locate nginx.conf查看nginx配置文件在哪)<br> <img src="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20190702161827.png" alt></li>
+<li>手机连接和电脑相同的wifi，连接charles</li>
+<li>手机扫码打开h5，即可进行微信分享</li>
+</ol>
+<h3 id="一些问题"><a href="#一些问题" class="headerlink" title="一些问题"></a>一些问题</h3><ol>
+<li>签名错误，按照以下顺序查找问题<ol>
+<li>检查签名是否正确<a href="http://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=jsapisign" target="_blank" rel="noopener">校验地址</a></li>
+<li>检查wx.config的字段大小写拼写是否正确</li>
+<li>确定url的完整性，仅仅不包括#以及#后面的</li>
+<li>确认 config 中的 appid 与用来获取 jsapi_ticket 的 appid 一致。</li>
+<li>检查获取wx config字段的接口的url是否和当前待分享页url一致，并且属于安全域名</li>
+</ol>
+</li>
+<li>配置好本地测试后，如果遇到其他接口504 gate way time-out，请检查配置的host时候与api地址冲突</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/memory/tags/frontend/" rel="tag"># frontend</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/memory/2021/05/09/bugOfArray/" rel="next" title="js数组中的漏洞">
+                <i class="fa fa-chevron-left"></i> js数组中的漏洞
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/memory/2021/05/09/autoformat/" rel="prev" title="根据eslint自动格式化">
+                根据eslint自动格式化 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">FoxDaxian</p>
+              <div class="site-description motion-element" itemprop="description">遇到好玩的，稀奇的，新鲜的，记录下来，分享出去。</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/memory/archives/">
+                
+                    <span class="site-state-item-count">40</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">categories</span>
+                  
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#微信分享本地测试方法"><span class="nav-number">1.</span> <span class="nav-text">微信分享本地测试方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一些问题"><span class="nav-number">2.</span> <span class="nav-text">一些问题</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">FoxDaxian</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/memory/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/memory/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/memory/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/memory/js/utils.js?v=7.2.0"></script>
+
+  <script src="/memory/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/memory/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+  
+  <script src="/memory/js/scrollspy.js?v=7.2.0"></script>
+<script src="/memory/js/post-details.js?v=7.2.0"></script>
+
+
+
+  
+
+
+  <script src="/memory/js/next-boot.js?v=7.2.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

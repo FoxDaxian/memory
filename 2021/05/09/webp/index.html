@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/memory/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/memory/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/memory/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/memory/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/memory/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/memory/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/memory/',
+    scheme: 'Muse',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="2010年，谷歌发布了一种新的图片格式：WebP，它是可以当初png和jpg的一种替代格式，在不损失图片质量的前提下，会尽可能的减少文件大小. WebP有哪些优点呢？由于WebP提供的性能和优点，它简直完美。不像其他屙屎，WebP有无损和有损两个压缩方式，还支持动画和透明度     WebP png jpg gif    Lossy compression √ √ √ x   Lossless c">
+<meta name="keywords" content="frontend">
+<meta property="og:type" content="article">
+<meta property="og:title" content="webp">
+<meta property="og:url" content="http://yoursite.com/2021/05/09/webp/index.html">
+<meta property="og:site_name" content="fox的博客">
+<meta property="og:description" content="2010年，谷歌发布了一种新的图片格式：WebP，它是可以当初png和jpg的一种替代格式，在不损失图片质量的前提下，会尽可能的减少文件大小. WebP有哪些优点呢？由于WebP提供的性能和优点，它简直完美。不像其他屙屎，WebP有无损和有损两个压缩方式，还支持动画和透明度     WebP png jpg gif    Lossy compression √ √ √ x   Lossless c">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2021-05-09T23:37:00.845Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="webp">
+<meta name="twitter:description" content="2010年，谷歌发布了一种新的图片格式：WebP，它是可以当初png和jpg的一种替代格式，在不损失图片质量的前提下，会尽可能的减少文件大小. WebP有哪些优点呢？由于WebP提供的性能和优点，它简直完美。不像其他屙屎，WebP有无损和有损两个压缩方式，还支持动画和透明度     WebP png jpg gif    Lossy compression √ √ √ x   Lossless c">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2021/05/09/webp/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>webp | fox的博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/memory/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">fox的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">github地址 -> https://github.com/FoxDaxian</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/memory/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/memory/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/memory/2021/05/09/webp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="FoxDaxian">
+      <meta itemprop="description" content="遇到好玩的，稀奇的，新鲜的，记录下来，分享出去。">
+      <meta itemprop="image" content="/memory/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fox的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">webp
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2021-05-09 23:37:00" itemprop="dateCreated datePublished" datetime="2021-05-09T23:37:00+00:00">2021-05-09</time>
+            </span>
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/memory/categories/原理/" itemprop="url" rel="index"><span itemprop="name">原理</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>2010年，谷歌发布了一种新的图片格式：<a href="https://developers.google.com/speed/webp/" target="_blank" rel="noopener">WebP</a>，它是可以当初png和jpg的一种替代格式，在不损失图片质量的前提下，会尽可能的减少文件大小.</p>
+<h4 id="WebP有哪些优点呢？"><a href="#WebP有哪些优点呢？" class="headerlink" title="WebP有哪些优点呢？"></a>WebP有哪些优点呢？</h4><p>由于WebP提供的性能和优点，它简直完美。不像其他屙屎，WebP有无损和有损两个压缩方式，还支持动画和透明度</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>WebP</th>
+<th>png</th>
+<th>jpg</th>
+<th>gif</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Lossy compression</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>x</td>
+</tr>
+<tr>
+<td>Lossless compression</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+</tr>
+<tr>
+<td>Transparency</td>
+<td>√</td>
+<td>√</td>
+<td>x</td>
+<td>√</td>
+</tr>
+<tr>
+<td>Animation</td>
+<td>√</td>
+<td>x</td>
+<td>x</td>
+<td>√</td>
+</tr>
+</tbody></table>
+<p>即使有这么多的优点，webp依然提供比其他格式更小的文件大小，在<a href="https://developers.google.com/speed/webp/docs/c_study#results" target="_blank" rel="noopener">这个测试中</a>，web有损图片比jpg格式要小30%，无损图片要比png格式小25。</p>
+<h4 id="怎么转换到webp格式呢"><a href="#怎么转换到webp格式呢" class="headerlink" title="怎么转换到webp格式呢"></a>怎么转换到webp格式呢</h4><ol>
+<li><p>在线工具</p>
+<ol>
+<li><a href="https://squoosh.app/" target="_blank" rel="noopener">squoosh</a></li>
+<li><a href="https://image.online-convert.com/convert-to-webp" target="_blank" rel="noopener">online-convert.com</a></li>
+</ol>
+</li>
+<li><p>命令行工具<br> <a href="https://www.npmjs.com/package/cwebp" target="_blank" rel="noopener">cwebp</a>是一个不错的工具，可以转换图片到webp格式</p>
+ <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// cwebp -q [图片大小] [输入] -o [输出]</span></span><br><span class="line">cwebp -q <span class="number">75</span> image.png -o image.webp</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>node工具<br> <a href="https://github.com/imagemin/imagemin" target="_blank" rel="noopener">imagemin</a>，还有它的插件<a href="https://github.com/imagemin/imagemin-webp" target="_blank" rel="noopener">imagemin-webp</a>，是一个转换图片到webp格式的工具<br> 下面这个例子将所有的png和jpg图片转成webp</p>
+ <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* convert-to-webp.js */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> imagemin = <span class="built_in">require</span>(<span class="string">"imagemin"</span>);</span><br><span class="line"><span class="keyword">const</span> webp = <span class="built_in">require</span>(<span class="string">"imagemin-webp"</span>);</span><br><span class="line"></span><br><span class="line">imagemin([<span class="string">"*.png"</span>, <span class="string">"*.jpg"</span>], <span class="string">"images"</span>, &#123;</span><br><span class="line">  use: [</span><br><span class="line">    webp(&#123; <span class="attr">quality</span>: <span class="number">75</span>&#125;)</span><br><span class="line">  ]</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>sketch<br> 可以使用sketch导出webp格式的图片</p>
+</li>
+</ol>
+<h4 id="当下环境如何在开发中使用webp格式呢"><a href="#当下环境如何在开发中使用webp格式呢" class="headerlink" title="当下环境如何在开发中使用webp格式呢"></a>当下环境如何在开发中使用webp格式呢</h4><p>可以先查看一下webp的<a href="https://caniuse.com/#search=webp" target="_blank" rel="noopener">兼容性</a><br>可以看到，当今各端支持率已高达70%多，虽然webp有这么多的有点，但是也不能直接使用，而不提供一种向后兼容的方式，否则在不支持的浏览器中，用户体验会很差。<br>我们可以使用HTML5中的<picture>元素，该标签允许为单张图片提供多个源。想下面这样</picture></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;picture&gt;</span><br><span class="line">    &lt;source type=<span class="string">"image/webp"</span> srcset=<span class="string">"image.webp"</span>&gt;</span><br><span class="line">    &lt;source type=<span class="string">"image/jpeg"</span> srcset=<span class="string">"image.jpg"</span>&gt;</span><br><span class="line">    &lt;img src=<span class="string">"image.jpg"</span> alt=<span class="string">"My Image"</span>&gt;</span><br><span class="line">&lt;<span class="regexp">/picture&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>source标签作为不同的源，img标签作为当浏览器不支持时的一种回退方案，当前<picture>支持率高达85%以上</picture></p>
+<p>除了html的办法，当然还有其他方案，比如：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> isSupportWebp = !![].map &amp;&amp; <span class="built_in">document</span>.createElement(<span class="string">'canvas'</span>).toDataURL(<span class="string">'image/webp'</span>).indexOf(<span class="string">'data:image/webp'</span>) == <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(isSupportWebp);</span><br></pre></td></tr></table></figure>
+
+<p>或者</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">window</span>.isSupportWebp = <span class="literal">false</span>;<span class="comment">//是否支持</span></span><br><span class="line">(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> img = <span class="keyword">new</span> Image(); </span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">getResult</span>(<span class="params">event</span>) </span>&#123;</span><br><span class="line">        <span class="comment">//如果进入加载且图片宽度为1(通过图片宽度值判断图片是否可以显示)</span></span><br><span class="line">        <span class="built_in">window</span>.isSupportWebp = event &amp;&amp; event.type === <span class="string">'load'</span> ? img.width == <span class="number">1</span> : <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    img.onerror = getResult;</span><br><span class="line">    img.onload = getResult;</span><br><span class="line">    <span class="comment">// 如果可以在那么则支持</span></span><br><span class="line">    img.src = <span class="string">'data:image/webp;base64,UklGRiQAAABXRUJQVlA4IBgAAAAwAQCdASoBAAEAAwA0JaQAA3AA/vuUAAA='</span>;</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://developers.google.com/speed/webp/" target="_blank" rel="noopener">webp官网</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/memory/tags/frontend/" rel="tag"># frontend</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/memory/2021/05/09/wxminiPrograme/" rel="next" title="微信小程序简析">
+                <i class="fa fa-chevron-left"></i> 微信小程序简析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/memory/2021/05/09/webComponent/" rel="prev" title="web component">
+                web component <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">FoxDaxian</p>
+              <div class="site-description motion-element" itemprop="description">遇到好玩的，稀奇的，新鲜的，记录下来，分享出去。</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/memory/archives/">
+                
+                    <span class="site-state-item-count">40</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">categories</span>
+                  
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#WebP有哪些优点呢？"><span class="nav-number">1.</span> <span class="nav-text">WebP有哪些优点呢？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#怎么转换到webp格式呢"><span class="nav-number">2.</span> <span class="nav-text">怎么转换到webp格式呢</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#当下环境如何在开发中使用webp格式呢"><span class="nav-number">3.</span> <span class="nav-text">当下环境如何在开发中使用webp格式呢</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">FoxDaxian</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/memory/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/memory/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/memory/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/memory/js/utils.js?v=7.2.0"></script>
+
+  <script src="/memory/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/memory/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+  
+  <script src="/memory/js/scrollspy.js?v=7.2.0"></script>
+<script src="/memory/js/post-details.js?v=7.2.0"></script>
+
+
+
+  
+
+
+  <script src="/memory/js/next-boot.js?v=7.2.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

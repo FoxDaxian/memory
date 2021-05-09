@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/memory/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/memory/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/memory/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/memory/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/memory/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/memory/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/memory/',
+    scheme: 'Muse',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="当javascript应用体积越来越大时，一个有利于减少体积的办法是拆分为不同的模块，伴随着模块化的产生，我们也可以进一步的移除多余的代码，比如那些虽然被应用，但是没有被实际用到的代码。tree shaking就是上述说法的一种实现，它通过去除所有引入但是并没有实际用到的代码来优化我们的最终打包结果的体积。 比如说，我们有一个工具文件，其中包含一些方法。 123456789101112131415">
+<meta name="keywords" content="backend">
+<meta property="og:type" content="article">
+<meta property="og:title" content="什么是tree shaking，它是怎样工作的？">
+<meta property="og:url" content="http://yoursite.com/2021/05/09/treeShaking/index.html">
+<meta property="og:site_name" content="fox的博客">
+<meta property="og:description" content="当javascript应用体积越来越大时，一个有利于减少体积的办法是拆分为不同的模块，伴随着模块化的产生，我们也可以进一步的移除多余的代码，比如那些虽然被应用，但是没有被实际用到的代码。tree shaking就是上述说法的一种实现，它通过去除所有引入但是并没有实际用到的代码来优化我们的最终打包结果的体积。 比如说，我们有一个工具文件，其中包含一些方法。 123456789101112131415">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20190924192611.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20190929145145.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20190929151539.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20190929151547.png">
+<meta property="og:updated_time" content="2021-05-09T23:37:00.845Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="什么是tree shaking，它是怎样工作的？">
+<meta name="twitter:description" content="当javascript应用体积越来越大时，一个有利于减少体积的办法是拆分为不同的模块，伴随着模块化的产生，我们也可以进一步的移除多余的代码，比如那些虽然被应用，但是没有被实际用到的代码。tree shaking就是上述说法的一种实现，它通过去除所有引入但是并没有实际用到的代码来优化我们的最终打包结果的体积。 比如说，我们有一个工具文件，其中包含一些方法。 123456789101112131415">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20190924192611.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2021/05/09/treeShaking/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>什么是tree shaking，它是怎样工作的？ | fox的博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/memory/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">fox的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">github地址 -> https://github.com/FoxDaxian</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/memory/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/memory/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/memory/2021/05/09/treeShaking/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="FoxDaxian">
+      <meta itemprop="description" content="遇到好玩的，稀奇的，新鲜的，记录下来，分享出去。">
+      <meta itemprop="image" content="/memory/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fox的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">什么是tree shaking，它是怎样工作的？
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2021-05-09 23:37:00" itemprop="dateCreated datePublished" datetime="2021-05-09T23:37:00+00:00">2021-05-09</time>
+            </span>
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/memory/categories/原理简析（翻译）/" itemprop="url" rel="index"><span itemprop="name">原理简析（翻译）</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>当javascript应用体积越来越大时，一个有利于减少体积的办法是拆分为不同的模块，伴随着模块化的产生，我们也可以进一步的移除多余的代码，比如那些虽然被应用，但是没有被实际用到的代码。tree shaking就是上述说法的一种实现，它通过去除所有引入但是并没有实际用到的代码来优化我们的最终打包结果的体积。</p>
+<p>比如说，我们有一个工具文件，其中包含一些方法。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// math.js</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"add"</span>);</span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">minus</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"minus"</span>);</span><br><span class="line">    <span class="keyword">return</span> a - b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">multiply</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"multiply"</span>);</span><br><span class="line">    <span class="keyword">return</span> a * b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">divide</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"divide"</span>);</span><br><span class="line">    <span class="keyword">return</span> a / b;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在我们的应用入口文件中，我们仅仅引入其中某一个方法，比如 <code>add</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// index.js</span></span><br><span class="line"><span class="keyword">import</span> &#123; add &#125; <span class="keyword">from</span> <span class="string">"./math"</span>;</span><br><span class="line"></span><br><span class="line">add(<span class="number">1</span>, <span class="number">2</span>);</span><br></pre></td></tr></table></figure>
+
+<p>假设我们使用webpack进行打包，下面是结果，我们仍然可以看到所有的方法，虽然我们仅仅想引入<code>add</code>方法</p>
+<p><img src="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20190924192611.png" alt></p>
+<p>不过，一旦我们开启 <code>tree shaking</code>，就只有我们引入的<code>add</code>方法会出现在bundle中</p>
+<p><img src="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20190929145145.png" alt></p>
+<hr>
+<h3 id="tree-shaking的原理"><a href="#tree-shaking的原理" class="headerlink" title="tree shaking的原理"></a>tree shaking的原理</h3><p>尽管90年代就有了tree shaking的概念，但是对于前段来说，tree shaking真正可以使用是在引入 <code>es6-module</code> 后。因为tree shaking 仅仅能分析静态语法。<br>在 es6 modules 之前，我们有commonjs规范，可以通过<code>require()</code>语法引入，但是，require是动态的，意味着我们可以在if - else 中使用它。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> myDynamicModule;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (condition) &#123;</span><br><span class="line">    myDynamicModule = <span class="built_in">require</span>(<span class="string">"foo"</span>);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    myDynamicModule = <span class="built_in">require</span>(<span class="string">"bar"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面的是commonjs模块的语法，不过tree shaking无法使用，因为在程序运行之前无法判断哪个模块会被实际应用。也就是说语法分析不能识别。</p>
+<p>es6引入了新的完全静态的语法，使用<code>import</code>发育，不在支持动态引入。(后来引入了的<code>import()</code>，返回promise，还是支持动态引入的.)</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// not work</span></span><br><span class="line"><span class="keyword">if</span> (condition) &#123;</span><br><span class="line">    <span class="keyword">import</span> foo <span class="keyword">from</span> <span class="string">"foo"</span>;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">import</span> bar <span class="keyword">from</span> <span class="string">"bar"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>相反，我们只能定义所有的引入在if - else之外的全局环境内，</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> foo <span class="keyword">from</span> <span class="string">"foo"</span>;</span><br><span class="line"><span class="keyword">import</span> bar <span class="keyword">from</span> <span class="string">"bar"</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (condition) &#123;</span><br><span class="line">    <span class="comment">// do stuff with foo</span></span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// do stuff with bar</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>除了其他的改进好处，新的语法有效的支持了tree shaking，任何代码不需要运行就可以通过语法解析判断出是否真正呗用到，以便进一步减少打包后的体积</p>
+<h3 id="tree-shaking-甩掉了什么"><a href="#tree-shaking-甩掉了什么" class="headerlink" title="tree shaking 甩掉了什么"></a>tree shaking 甩掉了什么</h3><p>webpack中的tree shaking，尽可能的甩掉了所有未使用到的代码，例如，引入了但是没有实际应用的代码会被消除。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; add, multiply &#125; <span class="keyword">from</span> <span class="string">"./mathUtils"</span>;</span><br><span class="line"></span><br><span class="line">add(<span class="number">1</span>, <span class="number">2</span>);</span><br></pre></td></tr></table></figure>
+
+<p>上面的代码，multiply因为被实际应用，所以会被消除</p>
+<p>即使对象上有定义的属性，但是如果没有被访问，也会被移除</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// myInfo.js</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> myInfo = &#123;</span><br><span class="line">    name: <span class="string">"Ire Aderinokun"</span>,</span><br><span class="line">    birthday: <span class="string">"2 March"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; myInfo &#125; <span class="keyword">from</span> <span class="string">"./myInfo.js"</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(myInfo.name);</span><br></pre></td></tr></table></figure>
+
+<p>before: </p>
+<p><img src="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20190929151539.jpg" alt></p>
+<p>after:</p>
+<p><img src="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20190929151547.png" alt></p>
+<p>不过 tree shaking 并不能消除所有的代码，因为 tree shaking 只会处理方法和变量，看下面的例子</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// myClass.js</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">MyClass.prototype.saySome = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;&#125; <span class="comment">// 副作用</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 扩展数据的方法</span></span><br><span class="line"><span class="built_in">Array</span>.prototype.unique = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> MyClass</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> MyClass <span class="keyword">from</span> <span class="string">'./myClass'</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'index'</span>);</span><br></pre></td></tr></table></figure>
+
+<p>这个时候就不会消除类文件myClass，因为会触发getter、setter，而getter、setter是不透明的，可能会有副作用<br><a href="https://zhuanlan.zhihu.com/p/32831172" target="_blank" rel="noopener">详情参考</a></p>
+<p><a href="https://rollupjs.cn/repl?version=0.53.3&shareable=JTdCJTIybW9kdWxlcyUyMiUzQSU1QiU3QiUyMm5hbWUlMjIlM0ElMjJtYWluLmpzJTIyJTJDJTIyY29kZSUyMiUzQSUyMmltcG9ydCUyME15Q2xhc3MlMjBmcm9tJTIwJy4lMkZ0ZXN0JyUzQiU1Q24lNUNuY29uc29sZS5sb2coMTIzKSUyMiU3RCUyQyU3QiUyMm5hbWUlMjIlM0ElMjJjb21wb25lbnRzLmpzJTIyJTJDJTIyY29kZSUyMiUzQSUyMmV4cG9ydCUyMGNsYXNzJTIwUGVyc29uJTIwJTdCJTVDbiUyMCUyMGNvbnN0cnVjdG9yJTIwKCU3QiUyMG5hbWUlMkMlMjBhZ2UlMkMlMjBzZXglMjAlN0QpJTIwJTdCJTVDbiUyMCUyMCUyMCUyMHRoaXMuY2xhc3NOYW1lJTIwJTNEJTIwJ1BlcnNvbiclNUNuJTIwJTIwJTIwJTIwdGhpcy5uYW1lJTIwJTNEJTIwbmFtZSU1Q24lMjAlMjAlMjAlMjB0aGlzLmFnZSUyMCUzRCUyMGFnZSU1Q24lMjAlMjAlMjAlMjB0aGlzLnNleCUyMCUzRCUyMHNleCU1Q24lMjAlMjAlN0QlNUNuJTIwJTIwZ2V0TmFtZSUyMCgpJTIwJTdCJTVDbiUyMCUyMCUyMCUyMHJldHVybiUyMHRoaXMubmFtZSU1Q24lMjAlMjAlN0QlNUNuJTdEJTVDbmV4cG9ydCUyMGNsYXNzJTIwQXBwbGUlMjAlN0IlNUNuJTIwJTIwY29uc3RydWN0b3IlMjAoJTdCJTIwbW9kZWwlMjAlN0QpJTIwJTdCJTVDbiUyMCUyMCUyMCUyMHRoaXMuY2xhc3NOYW1lJTIwJTNEJTIwJ0FwcGxlJyU1Q24lMjAlMjAlMjAlMjB0aGlzLm1vZGVsJTIwJTNEJTIwbW9kZWwlNUNuJTIwJTIwJTdEJTVDbiUyMCUyMGdldE1vZGVsJTIwKCklMjAlN0IlNUNuJTIwJTIwJTIwJTIwcmV0dXJuJTIwdGhpcy5tb2RlbCU1Q24lMjAlMjAlN0QlNUNuJTdEJTIyJTdEJTJDJTdCJTIybmFtZSUyMiUzQSUyMnRlc3QuanMlMjIlMkMlMjJjb2RlJTIyJTNBJTIyJTVDbmV4cG9ydCUyMGNsYXNzJTIwTXlDbGFzcyUyMCU3QiU3RCU1Q24lNUNuTXlDbGFzcy5wcm90b3R5cGUuc2F5U29tZSUyMCUzRCUyMGZ1bmN0aW9uJTIwKCklMjAlN0IlN0QlNUNuJTVDbkFycmF5LnByb3RvdHlwZS51bmlxdWUlMjAlM0QlMjBmdW5jdGlvbiUyMCgpJTIwJTdCJTdEJTVDbiU1Q24lMjIlN0QlNUQlMkMlMjJvcHRpb25zJTIyJTNBJTdCJTIyZm9ybWF0JTIyJTNBJTIydW1kJTIyJTJDJTIybW9kdWxlTmFtZSUyMiUzQSUyMm15QnVuZGxlJTIyJTJDJTIyZ2xvYmFscyUyMiUzQSU3QiU3RCUyQyUyMm5hbWUlMjIlM0ElMjJteUJ1bmRsZSUyMiUyQyUyMmFtZCUyMiUzQSU3QiUyMmlkJTIyJTNBJTIyJTIyJTdEJTdEJTJDJTIyZXhhbXBsZSUyMiUzQW51bGwlN0Q=" target="_blank" rel="noopener">rollup在线转换</a></p>
+<p>也许你会说我们能判断是否是原生方法，进而进行排除，其实不然，我们可以这样</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a = <span class="string">'a'</span>;</span><br><span class="line">a += <span class="string">'rr'</span>;</span><br><span class="line">a += <span class="string">'ay'</span>;</span><br></pre></td></tr></table></figure>
+
+<p>一句话就是，因为js本身是动态语言，所以情况太多，处理起来会有风险，tree shaking 的本意是优化，而不是影响，所以不是所有的代码都可以tree shaking</p>
+<h3 id="关于-‘side-effects’"><a href="#关于-‘side-effects’" class="headerlink" title="关于 ‘side effects’"></a>关于 ‘side effects’</h3><p>中文直译：副作用<br>什么是副作用：对当前包意外产生任意影响就是副作用</p>
+<p>一个典型的具有副作用的形式是 pollfills，因为它在window上增加了各种宿主环境不支持的最新方法，所以不能添加side effects</p>
+<h3 id="如何tree-shake"><a href="#如何tree-shake" class="headerlink" title="如何tree shake"></a>如何tree shake</h3><p>webpack目前支持通过设置mode来开启，比如</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">    ...,</span><br><span class="line">    mode: <span class="string">"production"</span>,</span><br><span class="line">    ...,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>webpack老版本依赖uglifyjs</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/memory/tags/backend/" rel="tag"># backend</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/memory/2021/05/09/vfFont/" rel="next" title="variable fonts - 更小更灵活的字体">
+                <i class="fa fa-chevron-left"></i> variable fonts - 更小更灵活的字体
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/memory/2021/05/09/tapable/" rel="prev" title="tapable简析">
+                tapable简析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">FoxDaxian</p>
+              <div class="site-description motion-element" itemprop="description">遇到好玩的，稀奇的，新鲜的，记录下来，分享出去。</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/memory/archives/">
+                
+                    <span class="site-state-item-count">40</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">categories</span>
+                  
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#tree-shaking的原理"><span class="nav-number">1.</span> <span class="nav-text">tree shaking的原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tree-shaking-甩掉了什么"><span class="nav-number">2.</span> <span class="nav-text">tree shaking 甩掉了什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于-‘side-effects’"><span class="nav-number">3.</span> <span class="nav-text">关于 ‘side effects’</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何tree-shake"><span class="nav-number">4.</span> <span class="nav-text">如何tree shake</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">FoxDaxian</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/memory/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/memory/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/memory/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/memory/js/utils.js?v=7.2.0"></script>
+
+  <script src="/memory/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/memory/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+  
+  <script src="/memory/js/scrollspy.js?v=7.2.0"></script>
+<script src="/memory/js/post-details.js?v=7.2.0"></script>
+
+
+
+  
+
+
+  <script src="/memory/js/next-boot.js?v=7.2.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

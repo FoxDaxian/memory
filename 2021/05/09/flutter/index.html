@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/memory/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/memory/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/memory/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/memory/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/memory/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/memory/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/memory/',
+    scheme: 'Muse',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="Flutter目录 简介 JIT &amp;amp; AOT 比较 框架结构 数据管理 原理简析 现状  简介Flutter是谷歌的移动UI框架，主打跨平台、高保真、高性能。可以快速在ios和android上构建高质量的原生用户界面。使用Dart语言开发App。  高性能 开发JIT，发布AOT 使用自己的渲染引擎，无需像rn那样js与native通信   开发效率高 一份代码多平台使用 热重载   Da">
+<meta name="keywords" content="frontend">
+<meta property="og:type" content="article">
+<meta property="og:title" content="flutter简析">
+<meta property="og:url" content="http://yoursite.com/2021/05/09/flutter/index.html">
+<meta property="og:site_name" content="fox的博客">
+<meta property="og:description" content="Flutter目录 简介 JIT &amp;amp; AOT 比较 框架结构 数据管理 原理简析 现状  简介Flutter是谷歌的移动UI框架，主打跨平台、高保真、高性能。可以快速在ios和android上构建高质量的原生用户界面。使用Dart语言开发App。  高性能 开发JIT，发布AOT 使用自己的渲染引擎，无需像rn那样js与native通信   开发效率高 一份代码多平台使用 热重载   Da">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/13_flutter/jit.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/13_flutter/aot.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/13_flutter/framework.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/13_flutter/event-bus.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/13_flutter/flutternow.jpg">
+<meta property="og:updated_time" content="2021-05-09T23:37:00.845Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="flutter简析">
+<meta name="twitter:description" content="Flutter目录 简介 JIT &amp;amp; AOT 比较 框架结构 数据管理 原理简析 现状  简介Flutter是谷歌的移动UI框架，主打跨平台、高保真、高性能。可以快速在ios和android上构建高质量的原生用户界面。使用Dart语言开发App。  高性能 开发JIT，发布AOT 使用自己的渲染引擎，无需像rn那样js与native通信   开发效率高 一份代码多平台使用 热重载   Da">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/13_flutter/jit.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2021/05/09/flutter/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>flutter简析 | fox的博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/memory/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">fox的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">github地址 -> https://github.com/FoxDaxian</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/memory/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/memory/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/memory/2021/05/09/flutter/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="FoxDaxian">
+      <meta itemprop="description" content="遇到好玩的，稀奇的，新鲜的，记录下来，分享出去。">
+      <meta itemprop="image" content="/memory/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fox的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">flutter简析
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2021-05-09 23:37:00" itemprop="dateCreated datePublished" datetime="2021-05-09T23:37:00+00:00">2021-05-09</time>
+            </span>
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/memory/categories/原理/" itemprop="url" rel="index"><span itemprop="name">原理</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Flutter"><a href="#Flutter" class="headerlink" title="Flutter"></a>Flutter</h1><h3 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h3><ul>
+<li>简介</li>
+<li>JIT &amp; AOT</li>
+<li>比较</li>
+<li>框架结构</li>
+<li>数据管理</li>
+<li>原理简析</li>
+<li>现状</li>
+</ul>
+<h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>Flutter是谷歌的移动UI框架，主打跨平台、高保真、高性能。可以快速在ios和android上构建高质量的原生用户界面。使用Dart语言开发App。</p>
+<ul>
+<li>高性能<ul>
+<li>开发JIT，发布AOT</li>
+<li>使用自己的渲染引擎，无需像rn那样js与native通信</li>
+</ul>
+</li>
+<li>开发效率高<ul>
+<li>一份代码多平台使用</li>
+<li>热重载</li>
+</ul>
+</li>
+<li>Dart强类型语言</li>
+</ul>
+<p>实现思路：通过在不同平台实现统一接口的渲染引擎来绘制UI，而不依赖系统原生控件。所以解决的是UI的跨平台问题，如有涉及其他系统能力，依然需要原生开发。<br>Flutter也是受到的React启发，很多思想是相同的，所以有必要去了解react。</p>
+<h3 id="JIT-amp-AOT"><a href="#JIT-amp-AOT" class="headerlink" title="JIT &amp; AOT"></a>JIT &amp; AOT</h3><h5 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h5><ul>
+<li><p>JIT(动态解释)<br>边运行边编译，边编译边运行。<br><img src="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/13_flutter/jit.png" alt></p>
+</li>
+<li><p>AOT(静态编译)<br>把源代码编译成目标代码(机器码、中间字节码)，然后执行<br><img src="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/13_flutter/aot.png" alt></p>
+<h5 id="比较"><a href="#比较" class="headerlink" title="比较"></a>比较</h5><p>JIT优点：</p>
+<ol>
+<li>根据硬件情况编译最优结果</li>
+<li>合理运用内存空间</li>
+</ol>
+</li>
+</ul>
+<p>JIT缺点：</p>
+<ol>
+<li>编译占用运行时资源</li>
+<li>需要在程序路畅和编译时间之间权衡</li>
+</ol>
+<p>AOT优点：</p>
+<ol>
+<li>避免运行时的性能和内存消耗</li>
+<li>大大减少程序启动时间</li>
+</ol>
+<p>AOT缺点：</p>
+<ol>
+<li>开发效率低</li>
+</ol>
+<p>相关推荐： <a href="https://ppt.baomitu.com/user/center" target="_blank" rel="noopener">WebAssembly介绍</a></p>
+<h3 id="框架结构"><a href="#框架结构" class="headerlink" title="框架结构"></a>框架结构</h3><p><img src="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/13_flutter/framework.png" alt></p>
+<h4 id="Flutter-Framework"><a href="#Flutter-Framework" class="headerlink" title="Flutter Framework"></a>Flutter Framework</h4><ul>
+<li>framework中最下面两层是dary UI层，对应flutter中的<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">- Rendering层，依赖于dart ui层，相当于一个控制器。rendering层会构建出ui树，当ui树有变化的时候，diff，然后更新ui树，在渲染到屏幕上。</span><br><span class="line">- Widgets层是flutter提供的一套基础组件库，在flutter中，可以说一切都是widget</span><br><span class="line"></span><br><span class="line">#### Flutter Engine</span><br><span class="line">- 纯c++实现的sdk，其中包括 skia引擎、 dart运行时、 文字排版引擎等等，在调用dart:ui的时候，调用最终会走到Engine，实现绘制逻辑。</span><br><span class="line"></span><br><span class="line">#### 扩展 - widgets</span><br><span class="line"></span><br><span class="line">**一切皆为widget***</span><br><span class="line"></span><br><span class="line">和html不同，flutter没有css(样式)，也没有js(逻辑)，flutter只有一个个的widget，widget可以表示不同的html元素，比如input，button等等，widget也可以像html那样嵌套使用，不过是放到child中。</span><br><span class="line"></span><br><span class="line">![](https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/13_flutter/widget.png)</span><br><span class="line"></span><br><span class="line">##### 展示Widget</span><br><span class="line">- 你想加载图片，可以使用 ```Image```widget</span><br><span class="line">- 你想居中，可以使用```Center```widget</span><br><span class="line">- 你想采用独特的样式，可以使用```Theme```widget</span><br><span class="line">- 你想添加手势检测，可以使用```GustureDetector```widget</span><br><span class="line">还有常用的```Row```、```Column```、```Container```、```Text```等等</span><br><span class="line"></span><br><span class="line">##### 状态Widget</span><br><span class="line"></span><br><span class="line">- StatelessWidget</span><br><span class="line">- StateFulWidget</span><br><span class="line"></span><br><span class="line">想要管理widget的状态，你需要继承```StateFulWidget</span><br></pre></td></tr></table></figure></li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 有状态计数器demo</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyHomePage</span> <span class="keyword">extends</span> <span class="title">StatefulWidget</span> </span>&#123;</span><br><span class="line">  MyHomePage(&#123;Key key, <span class="keyword">this</span>.title&#125;) : <span class="keyword">super</span>(key: key);</span><br><span class="line">  final <span class="built_in">String</span> title;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 管理自己的状态，重写createState</span></span><br><span class="line">  @override</span><br><span class="line">  _MyHomePageState createState() =&gt; <span class="keyword">new</span> _MyHomePageState();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">_MyHomePageState</span> <span class="keyword">extends</span> <span class="title">State</span>&lt;<span class="title">MyHomePage</span>&gt; </span>&#123;</span><br><span class="line">  int _counter = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">void</span> _incrementCounter() &#123;</span><br><span class="line">    setState(() &#123;</span><br><span class="line">      _counter++;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  @override</span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Scaffold(</span><br><span class="line">      appBar: <span class="keyword">new</span> AppBar(</span><br><span class="line">        title: <span class="keyword">new</span> Text(widget.title),</span><br><span class="line">      ),</span><br><span class="line">      body: <span class="keyword">new</span> Center(</span><br><span class="line">        child: <span class="keyword">new</span> Column(</span><br><span class="line">          mainAxisAlignment: MainAxisAlignment.center,</span><br><span class="line">          children: <span class="xml"><span class="tag">&lt;<span class="name">Widget</span>&gt;</span>[</span></span><br><span class="line"><span class="xml">            new Text(</span></span><br><span class="line"><span class="xml">              '第一行',</span></span><br><span class="line"><span class="xml">            ),</span></span><br><span class="line"><span class="xml">            new Text(</span></span><br><span class="line"><span class="xml">              '$_counter'</span></span><br><span class="line"><span class="xml">            ),</span></span><br><span class="line"><span class="xml">          ],</span></span><br><span class="line"><span class="xml">        ),</span></span><br><span class="line"><span class="xml">      ),</span></span><br><span class="line"><span class="xml">      floatingActionButton: new FloatingActionButton(</span></span><br><span class="line"><span class="xml">        onPressed: _incrementCounter,</span></span><br><span class="line"><span class="xml">        tooltip: 'Increment',</span></span><br><span class="line"><span class="xml">        child: new Icon(Icons.add),</span></span><br><span class="line"><span class="xml">      ), // This trailing comma makes auto-formatting nicer for build methods.</span></span><br><span class="line"><span class="xml">    );</span></span><br><span class="line"><span class="xml">  &#125;</span></span><br><span class="line"><span class="xml">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><a href="https://github.com/FoxDaxian/flutter_weixin/blob/master/lib/page/home/listItem.dart" target="_blank" rel="noopener">无状态demo</a></p>
+<h3 id="数据管理"><a href="#数据管理" class="headerlink" title="数据管理"></a>数据管理</h3><p>常见的有：</p>
+<ul>
+<li>flutter_redux</li>
+<li>event_bus(推荐)</li>
+</ul>
+<h5 id="event-bus"><a href="#event-bus" class="headerlink" title="event_bus"></a>event_bus</h5><p>事件总线模式、发布订阅模式<br>减少耦合，统一管理状态</p>
+<p><img src="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/13_flutter/event-bus.png" alt></p>
+<p>n步曲</p>
+<ul>
+<li><p>创建event bus(支持同步、异步)</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">'package:event_bus/event_bus.dart'</span>;</span><br><span class="line">EventBus eventBus = EventBus();</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>定义类</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserLoggedInEvent</span> </span>&#123;</span><br><span class="line">  User user;</span><br><span class="line"></span><br><span class="line">  UserLoggedInEvent(<span class="keyword">this</span>.user);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>订阅</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">eventBus.on&lt;UserLoggedInEvent&gt;().listen((event) &#123;</span><br><span class="line">  print(event.user);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">// 监听所有</span></span><br><span class="line">eventBus.on().listen((event) &#123;</span><br><span class="line">  print(event.user);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>发布</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">User myUser = User(<span class="string">'fox'</span>);</span><br><span class="line">eventBus.fire(UserLoggedInEvent(myUser));</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="原理简析"><a href="#原理简析" class="headerlink" title="原理简析"></a><a href="https://www.stephenw.cc/2018/05/14/flutter-principle/" target="_blank" rel="noopener">原理简析</a></h3><h3 id="现状"><a href="#现状" class="headerlink" title="现状"></a>现状</h3><p>今天google i/o大会，flutter团队宣布已支持移动、web、桌面和嵌入式设备。</p>
+<p><img src="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/13_flutter/flutternow.jpg" alt></p>
+<p>同时发布了flutter for web的首个技术预览版，宣布flutter正在为包括google home hub在内的google只能平台提供支持。</p>
+<p>flutter for web是flutter的代码兼容版本，使用基于标准的web技术(html, css, javascript)进行渲染，通过flutter for web，可以将dart编写的flutter代码编译成嵌入到浏览器，并部署到任何web服务器的客户端版本。开发者可以使用flutter的所有特性而无需浏览器插件。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/memory/tags/frontend/" rel="tag"># frontend</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/memory/2021/05/09/gaosimohu/" rel="next" title="图片高斯模糊">
+                <i class="fa fa-chevron-left"></i> 图片高斯模糊
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/memory/2021/05/09/electron/" rel="prev" title="electron简析">
+                electron简析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">FoxDaxian</p>
+              <div class="site-description motion-element" itemprop="description">遇到好玩的，稀奇的，新鲜的，记录下来，分享出去。</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/memory/archives/">
+                
+                    <span class="site-state-item-count">40</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">categories</span>
+                  
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Flutter"><span class="nav-number">1.</span> <span class="nav-text">Flutter</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#目录"><span class="nav-number">1.0.1.</span> <span class="nav-text">目录</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#简介"><span class="nav-number">1.0.2.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JIT-amp-AOT"><span class="nav-number">1.0.3.</span> <span class="nav-text">JIT &amp; AOT</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#定义"><span class="nav-number">1.0.3.0.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#比较"><span class="nav-number">1.0.3.0.2.</span> <span class="nav-text">比较</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#框架结构"><span class="nav-number">1.0.4.</span> <span class="nav-text">框架结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Flutter-Framework"><span class="nav-number">1.0.4.1.</span> <span class="nav-text">Flutter Framework</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据管理"><span class="nav-number">1.0.5.</span> <span class="nav-text">数据管理</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#event-bus"><span class="nav-number">1.0.5.0.1.</span> <span class="nav-text">event_bus</span></a></li></ol></li></ol><li class="nav-item nav-level-3"><a class="nav-link" href="#原理简析"><span class="nav-number">1.0.6.</span> <span class="nav-text">原理简析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#现状"><span class="nav-number">1.0.7.</span> <span class="nav-text">现状</span></a></li></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">FoxDaxian</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/memory/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/memory/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/memory/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/memory/js/utils.js?v=7.2.0"></script>
+
+  <script src="/memory/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/memory/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+  
+  <script src="/memory/js/scrollspy.js?v=7.2.0"></script>
+<script src="/memory/js/post-details.js?v=7.2.0"></script>
+
+
+
+  
+
+
+  <script src="/memory/js/next-boot.js?v=7.2.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

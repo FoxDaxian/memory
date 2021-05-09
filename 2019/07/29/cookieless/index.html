@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/memory/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/memory/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/memory/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/memory/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/memory/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/memory/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/memory/',
+    scheme: 'Muse',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="cookie是什么：cookie是由web服务器保存在用户浏览器（客户端）上的小文件，它可以包含用户信息，用户操作信息等等，无论何时访问服务器，只要同源，就能携带到服务端 常见方式 一般：请求一个接口，返回是否登录，如果登录成功，服务器(set-cookie)设置cookie到浏览器，以后请求api会继续请求 jwt：将用户id.payload.签证进行加密，并且注入到客户端cookie，之后每次">
+<meta name="keywords" content="frontend">
+<meta property="og:type" content="article">
+<meta property="og:title" content="cookieless记录用户信息？">
+<meta property="og:url" content="http://yoursite.com/2019/07/29/cookieless/index.html">
+<meta property="og:site_name" content="fox的博客">
+<meta property="og:description" content="cookie是什么：cookie是由web服务器保存在用户浏览器（客户端）上的小文件，它可以包含用户信息，用户操作信息等等，无论何时访问服务器，只要同源，就能携带到服务端 常见方式 一般：请求一个接口，返回是否登录，如果登录成功，服务器(set-cookie)设置cookie到浏览器，以后请求api会继续请求 jwt：将用户id.payload.签证进行加密，并且注入到客户端cookie，之后每次">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20190729114108.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20190729114709.gif">
+<meta property="og:updated_time" content="2021-05-09T23:37:00.845Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="cookieless记录用户信息？">
+<meta name="twitter:description" content="cookie是什么：cookie是由web服务器保存在用户浏览器（客户端）上的小文件，它可以包含用户信息，用户操作信息等等，无论何时访问服务器，只要同源，就能携带到服务端 常见方式 一般：请求一个接口，返回是否登录，如果登录成功，服务器(set-cookie)设置cookie到浏览器，以后请求api会继续请求 jwt：将用户id.payload.签证进行加密，并且注入到客户端cookie，之后每次">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20190729114108.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2019/07/29/cookieless/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>cookieless记录用户信息？ | fox的博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/memory/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">fox的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">github地址 -> https://github.com/FoxDaxian</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/memory/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/memory/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/memory/2019/07/29/cookieless/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="FoxDaxian">
+      <meta itemprop="description" content="遇到好玩的，稀奇的，新鲜的，记录下来，分享出去。">
+      <meta itemprop="image" content="/memory/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fox的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">cookieless记录用户信息？
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-07-29 12:00:00" itemprop="dateCreated datePublished" datetime="2019-07-29T12:00:00+00:00">2019-07-29</time>
+            </span>
+          
+
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2021-05-09 23:37:00" itemprop="dateModified" datetime="2021-05-09T23:37:00+00:00">2021-05-09</time>
+              </span>
+            
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/memory/categories/畅想/" itemprop="url" rel="index"><span itemprop="name">畅想</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h4 id="cookie是什么："><a href="#cookie是什么：" class="headerlink" title="cookie是什么："></a>cookie是什么：</h4><p>cookie是由web服务器保存在用户浏览器（客户端）上的小文件，它可以包含用户信息，用户操作信息等等，无论何时访问服务器，只要同源，就能携带到服务端</p>
+<h4 id="常见方式"><a href="#常见方式" class="headerlink" title="常见方式"></a>常见方式</h4><ol>
+<li>一般：请求一个接口，返回是否登录，如果登录成功，服务器(set-cookie)设置cookie到浏览器，以后请求api会继续请求</li>
+<li>jwt：将用户id.payload.签证进行加密，并且注入到客户端cookie，之后每次请求会在服务端解析该cookie，并获取对应的用户数据，由于存在客户端，所以解放了服务端，减少服务端压力。也可以将该cookie放到根域名下，这样就可以登录一次，遍地开花。</li>
+</ol>
+<h4 id="可以看到，常见的方式都是利用cookie（或者浏览器storage），这样你的信息还是会被看到，如果别人获取到你的cookie也有办法进行破解甚至直接复制登录。那么有没有办法不借用cookie来记录用户信息的？"><a href="#可以看到，常见的方式都是利用cookie（或者浏览器storage），这样你的信息还是会被看到，如果别人获取到你的cookie也有办法进行破解甚至直接复制登录。那么有没有办法不借用cookie来记录用户信息的？" class="headerlink" title="可以看到，常见的方式都是利用cookie（或者浏览器storage），这样你的信息还是会被看到，如果别人获取到你的cookie也有办法进行破解甚至直接复制登录。那么有没有办法不借用cookie来记录用户信息的？"></a>可以看到，常见的方式都是利用cookie（或者浏览器storage），这样你的信息还是会被看到，如果别人获取到你的cookie也有办法进行破解甚至直接复制登录。那么有没有办法不借用cookie来记录用户信息的？</h4><hr>
+<h4 id="利用缓存存储用户信息"><a href="#利用缓存存储用户信息" class="headerlink" title="利用缓存存储用户信息"></a>利用缓存存储用户信息</h4><ol>
+<li>优点：安全可靠</li>
+<li>缺点：依赖服务端</li>
+</ol>
+<h4 id="原理概述："><a href="#原理概述：" class="headerlink" title="原理概述："></a>原理概述：</h4><p>请求一个资源，如果设置cache-control、lastmodify、etag等，会进行缓存相关的判定：</p>
+<ol>
+<li>cache-control：是否强缓存，如果命中直接读取浏览器缓存的上次返回内容</li>
+<li>last-modify：如果未命中强缓存，进行时间的判断，如果有if-modified-since并且和last-modify那么读取缓存，否则重新拉取资源</li>
+<li>etag：如果未命中强缓存，通过etag唯一标志福来判断是否需要拉取最新资源，etag一般用文件内容的hash加密后内容，如果是大文件，个人建议使用文件大小+最后修改时间作为唯一标志<br>综上所述，如果我们请求一个很小的资源文件，例如1字节的图片，服务端设置cache-control: max-age=0，跳过强缓存，服务端设置etag，保证每次都做协商缓存，然后根据etag的变化来决定是否需要拉新(记录用户信息)，如果etag没有变化，那么就读取缓存(缓存记录用户信息)</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20190729114108.png" alt></p>
+<h4 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Koa = <span class="built_in">require</span>(<span class="string">'koa'</span>);</span><br><span class="line"><span class="keyword">const</span> KoaBody = <span class="built_in">require</span>(<span class="string">'koa-body'</span>);</span><br><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>);</span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"><span class="keyword">const</span> glob = <span class="built_in">require</span>(<span class="string">'glob'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> baseDate = &#123;</span><br><span class="line">    visitCount: <span class="number">1</span>,</span><br><span class="line">    date: <span class="literal">undefined</span>,</span><br><span class="line">    info: <span class="string">''</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = <span class="keyword">new</span> Koa();</span><br><span class="line"></span><br><span class="line">app.use(KoaBody());</span><br><span class="line"></span><br><span class="line">app.use(<span class="keyword">async</span> ctx =&gt; &#123;</span><br><span class="line">    <span class="comment">// 更新资源</span></span><br><span class="line">    <span class="keyword">if</span> (ctx.req.url === <span class="string">'/updateInfo'</span> &amp;&amp; ctx.req.method === <span class="string">'POST'</span>) &#123;</span><br><span class="line">        <span class="keyword">const</span> session = <span class="built_in">require</span>(<span class="string">'./session.json'</span>);</span><br><span class="line">        session.info = ctx.request.body.info;</span><br><span class="line">        <span class="keyword">await</span> writeFile(<span class="string">'session.json'</span>, <span class="built_in">JSON</span>.stringify(session));</span><br><span class="line">        ctx.body = &#123;</span><br><span class="line">            code: <span class="number">1</span></span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> imgType = glob</span><br><span class="line">        .sync(<span class="string">'*.+(jpg|png)'</span>)</span><br><span class="line">        .map(<span class="function"><span class="params">file</span> =&gt;</span> path.resolve(<span class="string">'/'</span>, file));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ((fileIndex = imgType.indexOf(ctx.req.url)) !== <span class="number">-1</span>) &#123;</span><br><span class="line">        <span class="keyword">const</span> res = ctx.response;</span><br><span class="line">        <span class="keyword">const</span> req = ctx.req;</span><br><span class="line">        res.type = path.extname(imgType[fileIndex]).slice(<span class="number">1</span>);</span><br><span class="line">        <span class="keyword">const</span> filePath = path.join(<span class="string">'./'</span>, imgType[fileIndex]);</span><br><span class="line">        res.set(<span class="string">'cache-control'</span>, <span class="string">'public, max-age=0'</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> session;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            session = <span class="built_in">require</span>(<span class="string">'./session.json'</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">            session = &#123;...baseDate&#125;;</span><br><span class="line">            session.date = <span class="keyword">new</span> <span class="built_in">Date</span>().toLocaleString();</span><br><span class="line">            <span class="keyword">await</span> writeFile(<span class="string">'session.json'</span>, <span class="built_in">JSON</span>.stringify(session));</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="comment">// use force refresh to clear etag, because if serve set etag,</span></span><br><span class="line">            <span class="comment">// browser will carry if-none-match field in request header. and we can use if-none-match to judge somethine</span></span><br><span class="line">            <span class="comment">// etag 大文件一般用文件大小 + 修改时间 来生成，而不是读取文件内容</span></span><br><span class="line">            md5 = convertMd5(<span class="built_in">JSON</span>.stringify(session));</span><br><span class="line">            res.etag = md5;</span><br><span class="line">            <span class="keyword">if</span> (req.headers[<span class="string">'if-none-match'</span>]) &#123;</span><br><span class="line">                <span class="comment">// console.log('缓存');</span></span><br><span class="line">                session.visitCount = +session.visitCount + <span class="number">1</span>;</span><br><span class="line">                session.date = <span class="keyword">new</span> <span class="built_in">Date</span>().toLocaleString();</span><br><span class="line">                <span class="keyword">await</span> writeFile(<span class="string">'./session.json'</span>, <span class="built_in">JSON</span>.stringify(session));</span><br><span class="line">                res.status = <span class="number">304</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">// console.log('清除缓存');</span></span><br><span class="line">                session.visitCount = <span class="number">1</span>;</span><br><span class="line">                session.date = <span class="keyword">new</span> <span class="built_in">Date</span>().toLocaleString();</span><br><span class="line">                session.info = <span class="string">''</span>;</span><br><span class="line">                <span class="keyword">await</span> writeFile(<span class="string">'./session.json'</span>, <span class="built_in">JSON</span>.stringify(session));</span><br><span class="line">                ctx.body = fs.createReadStream(filePath);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">app.listen(<span class="number">3000</span>);</span><br></pre></td></tr></table></figure>
+
+<h4 id="运行demo"><a href="#运行demo" class="headerlink" title="运行demo"></a>运行demo</h4><p><img src="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20190729114709.gif" alt></p>
+<p>有问题欢迎交流</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/memory/tags/frontend/" rel="tag"># frontend</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/memory/2019/08/05/regReplace/" rel="prev" title="string.prototype.replace 特殊符号">
+                string.prototype.replace 特殊符号 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">FoxDaxian</p>
+              <div class="site-description motion-element" itemprop="description">遇到好玩的，稀奇的，新鲜的，记录下来，分享出去。</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/memory/archives/">
+                
+                    <span class="site-state-item-count">40</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">categories</span>
+                  
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#cookie是什么："><span class="nav-number">1.</span> <span class="nav-text">cookie是什么：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#常见方式"><span class="nav-number">2.</span> <span class="nav-text">常见方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#可以看到，常见的方式都是利用cookie（或者浏览器storage），这样你的信息还是会被看到，如果别人获取到你的cookie也有办法进行破解甚至直接复制登录。那么有没有办法不借用cookie来记录用户信息的？"><span class="nav-number">3.</span> <span class="nav-text">可以看到，常见的方式都是利用cookie（或者浏览器storage），这样你的信息还是会被看到，如果别人获取到你的cookie也有办法进行破解甚至直接复制登录。那么有没有办法不借用cookie来记录用户信息的？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#利用缓存存储用户信息"><span class="nav-number">4.</span> <span class="nav-text">利用缓存存储用户信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#原理概述："><span class="nav-number">5.</span> <span class="nav-text">原理概述：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#代码示例"><span class="nav-number">6.</span> <span class="nav-text">代码示例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#运行demo"><span class="nav-number">7.</span> <span class="nav-text">运行demo</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">FoxDaxian</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/memory/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/memory/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/memory/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/memory/js/utils.js?v=7.2.0"></script>
+
+  <script src="/memory/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/memory/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+  
+  <script src="/memory/js/scrollspy.js?v=7.2.0"></script>
+<script src="/memory/js/post-details.js?v=7.2.0"></script>
+
+
+
+  
+
+
+  <script src="/memory/js/next-boot.js?v=7.2.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

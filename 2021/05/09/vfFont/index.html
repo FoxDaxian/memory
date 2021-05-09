@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/memory/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/memory/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/memory/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/memory/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/memory/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/memory/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/memory/',
+    scheme: 'Muse',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="原文链接variable fonts（下文中vf为缩写）是数字时代制作的字体技术，用更小的文件大小在web上提供更丰富的排版，但是一项新的技术往往伴随着新的挑战和复杂未知的情况。不过，我们要拥抱技术，那么怎么才能使用它呢？ 让我们从以下几个问题去学习一下variable fonts。  什么是variable fonts? variable fonts能做什么 拉伸或者扭曲字体会不会有不好的效果和">
+<meta name="keywords" content="frontend">
+<meta property="og:type" content="article">
+<meta property="og:title" content="variable fonts - 更小更灵活的字体">
+<meta property="og:url" content="http://yoursite.com/2021/05/09/vfFont/index.html">
+<meta property="og:site_name" content="fox的博客">
+<meta property="og:description" content="原文链接variable fonts（下文中vf为缩写）是数字时代制作的字体技术，用更小的文件大小在web上提供更丰富的排版，但是一项新的技术往往伴随着新的挑战和复杂未知的情况。不过，我们要拥抱技术，那么怎么才能使用它呢？ 让我们从以下几个问题去学习一下variable fonts。  什么是variable fonts? variable fonts能做什么 拉伸或者扭曲字体会不会有不好的效果和">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://foxdaxian.github.io/assets/02_variableFonts/static-font-files-vs-variable-font-files.png">
+<meta property="og:image" content="https://foxdaxian.github.io/assets/02_variableFonts/variable-fonts-interpolation.gif">
+<meta property="og:image" content="https://foxdaxian.github.io/assets/02_variableFonts/variable-fonts-named-instances-along-weight-axis.png">
+<meta property="og:image" content="https://foxdaxian.github.io/assets/02_variableFonts/variable-fonts-venn-weight-axis-width-axis.png">
+<meta property="og:image" content="https://foxdaxian.github.io/assets/02_variableFonts/variable-fonts-weight-width-slant-axis-morphing.gif">
+<meta property="og:image" content="https://foxdaxian.github.io/assets/02_variableFonts/variable-font-vs-distorted-stretched-font.png">
+<meta property="og:image" content="https://foxdaxian.github.io/assets/02_variableFonts/variable-fonts-on-the-web-demo-page-its-time-for-variable-web-typography.jpg">
+<meta property="og:image" content="https://foxdaxian.github.io/assets/02_variableFonts/web-fonts-loaded-for-sz-magazin-sueddeutsche-de.jpg">
+<meta property="og:image" content="https://foxdaxian.github.io/assets/02_variableFonts/variable-font-optical-size-voto-serif-variable.png">
+<meta property="og:image" content="https://foxdaxian.github.io/assets/02_variableFonts/variable-font-decovar-coustom-axis-morphing.gif">
+<meta property="og:updated_time" content="2021-05-09T23:37:00.845Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="variable fonts - 更小更灵活的字体">
+<meta name="twitter:description" content="原文链接variable fonts（下文中vf为缩写）是数字时代制作的字体技术，用更小的文件大小在web上提供更丰富的排版，但是一项新的技术往往伴随着新的挑战和复杂未知的情况。不过，我们要拥抱技术，那么怎么才能使用它呢？ 让我们从以下几个问题去学习一下variable fonts。  什么是variable fonts? variable fonts能做什么 拉伸或者扭曲字体会不会有不好的效果和">
+<meta name="twitter:image" content="https://foxdaxian.github.io/assets/02_variableFonts/static-font-files-vs-variable-font-files.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2021/05/09/vfFont/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>variable fonts - 更小更灵活的字体 | fox的博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/memory/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">fox的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">github地址 -> https://github.com/FoxDaxian</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/memory/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/memory/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/memory/2021/05/09/vfFont/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="FoxDaxian">
+      <meta itemprop="description" content="遇到好玩的，稀奇的，新鲜的，记录下来，分享出去。">
+      <meta itemprop="image" content="/memory/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fox的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">variable fonts - 更小更灵活的字体
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2021-05-09 23:37:00" itemprop="dateCreated datePublished" datetime="2021-05-09T23:37:00+00:00">2021-05-09</time>
+            </span>
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/memory/categories/原理/" itemprop="url" rel="index"><span itemprop="name">原理</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="原文链接"><a href="#原文链接" class="headerlink" title="原文链接"></a><a href="https://github.com/FoxDaxian/memory/issues/4" target="_blank" rel="noopener">原文链接</a></h2><p>variable fonts（下文中vf为缩写）是数字时代制作的字体技术，用更小的文件大小在web上提供更丰富的排版，但是一项新的技术往往伴随着新的挑战和复杂未知的情况。不过，我们要拥抱技术，那么怎么才能使用它呢？</p>
+<p>让我们从以下几个问题去学习一下variable fonts。</p>
+<ul>
+<li><a href="#part_one">什么是variable fonts?</a></li>
+<li><a href="#part_two">variable fonts能做什么</a></li>
+<li><a href="#part_three">拉伸或者扭曲字体会不会有不好的效果和影响？</a></li>
+<li><a href="#part_four">variable fonts有哪些优点？</a></li>
+<li><a href="#part_five">怎么在web上使用variable fonts？</a></li>
+<li><a href="#part_six">有哪些潜在的缺陷需要注意？</a></li>
+<li><a href="#part_seven">variable fonts何时才会相对成熟？</a></li>
+</ul>
+<h3 id="什么是variable-fonts"><a href="#什么是variable-fonts" class="headerlink" title="什么是variable fonts?"></a><a id="part_one">什么是variable fonts?</a></h3><p>有人解释它为一个存在多种字体格式单字体文件。一般来说，字体的不同格式，比如斜体、粗细、拉伸存储在分开的单个文件内，而现在，你可以存储多种字体格式在一个openType可变字体文件内，正因为如此，这个vf文件相对来说体积会更小。</p>
+<p><img src="https://foxdaxian.github.io/assets/02_variableFonts/static-font-files-vs-variable-font-files.png" alt="资源"></p>
+<p align="center">多个静态字体文件可以被存储到一个vf文件</p>
+
+<p>因为只有一种排版的<code>轮廓点</code>，所以文件体积很小。这些点决定了文字的直接表现。修改<code>轮廓点</code>的位置意味着能够动态的在浏览器里改变文字的样子。这使得在半粗体和粗体之间的转换成为可能。向下面这样：</p>
+<p><img src="https://foxdaxian.github.io/assets/02_variableFonts/variable-fonts-interpolation.gif" alt="资源"></p>
+<p align="center">修改vf字体的例子，这些`轮廓点`的数量没有变化，仅仅是位置发生了改变</p>
+
+<p>在各种<code>轴(将一个可修改范围抽象化为一条(x)轴，或者说横坐标)</code>上可以以非常小的数值进行改变，比如<code>粗细轴</code>，一点点的修改就会发生很大的风格变化，像<code>regular</code>和<code>font-weight: 700</code>之间有其他的值可以进行指定。</p>
+<p><img src="https://foxdaxian.github.io/assets/02_variableFonts/variable-fonts-named-instances-along-weight-axis.png" alt="资源"></p>
+<p>一个vf字体可以有很多类似的<code>轴</code>，比如增加一个<code>身高轴</code>，就能延伸出更多风格的字体。也可以想想成为一个有x和y的坐标轴，当x轴的可修改范围为50，y轴的可修改范围为500的时候，你就会得到25000中不同风格的字体，并且文件大小也很可观。</p>
+<p><img src="https://foxdaxian.github.io/assets/02_variableFonts/variable-fonts-venn-weight-axis-width-axis.png" alt="资源"></p>
+<p align="center">各种各样的字体</p>
+
+
+
+<h3 id="variable-fonts能做什么？"><a href="#variable-fonts能做什么？" class="headerlink" title="variable fonts能做什么？"></a><a id="part_two">variable fonts能做什么？</a></h3><p>这个得根据字体的设计来决定，字体的设计提供了各种各种可以被修改的<code>轴</code>，比如粗细，长短以及任何合理范畴之内的。下面提供五个常用的<code>保留轴</code>:</p>
+<ul>
+<li>wdth: 用于修改字的宽窄</li>
+<li>wght: 用于修改字的粗细</li>
+<li>ital: 是否倾斜，0为非倾斜，1为斜体</li>
+<li>slnt: 用于修改字的倾斜程度</li>
+<li>opsz: 对于字形的修改(待确认)</li>
+</ul>
+<p>尽管宽窄、粗细是更为常见的<code>供修改轴</code>，但是也有一些<code>自定义轴</code>，比如<code>衬线(衬线是字的笔画开始和结束部分的额外装饰)轴</code>等。</p>
+<p><img src="https://foxdaxian.github.io/assets/02_variableFonts/variable-fonts-weight-width-slant-axis-morphing.gif" alt="资源"></p>
+<p align="center">通过改变`轴`生成的动画，有没有很酷炫？</p>
+
+<h3 id="拉伸或者扭曲字体会不会有不好的效果和影响？"><a href="#拉伸或者扭曲字体会不会有不好的效果和影响？" class="headerlink" title="拉伸或者扭曲字体会不会有不好的效果和影响？"></a><a id="part_three">拉伸或者扭曲字体会不会有不好的效果和影响？</a></h3><p>当vf字体改变宽窄、粗细或者其他维度的时候，不会造成不好的影响。但是如果换做<code>transform: scaleX(0.5)</code>，就会发生不好的影响，因为它直接修改了字体的设计，设计师看了会打人。</p>
+<p>为什么拉伸或者扭曲字体是一个很严重的问题？因为字体设计师在每个字符的协调上下了很多心血，所以这样的字体符合正常的审美。而草率的拉伸或者扭曲字体会导致设计师的心血功亏一篑。即使修改之后的不同是很微小的，但是也会影响字体整体的外观和感觉。</p>
+<p><img src="https://foxdaxian.github.io/assets/02_variableFonts/variable-font-vs-distorted-stretched-font.png" alt="资源"></p>
+<p align="center">仔细看上面这张图中的字母O，下面的O已经超出蓝色范围，而上面的依旧保持的很好。吐槽，本人没觉得有啥美感的丢失</p>
+
+<h3 id="variable-fonts有哪些优点？"><a href="#variable-fonts有哪些优点？" class="headerlink" title="variable fonts有哪些优点？"></a><a id="part_four">variable fonts有哪些优点？</a></h3><h5 id="最明显的优点，或许你已经想到了，就是提供丰富的自定义web字体"><a href="#最明显的优点，或许你已经想到了，就是提供丰富的自定义web字体" class="headerlink" title="最明显的优点，或许你已经想到了，就是提供丰富的自定义web字体"></a>最明显的优点，或许你已经想到了，就是提供丰富的自定义web字体</h5><p>网站开发者可以利用不同风格的字体去突出某些部分的趣味性和重要性，网站可以以编辑设计的方式处理更多的排版，提供更丰富的视觉展示和个性化方案。我创建了一个<a href="https://zeichenschatz.net/demos/vf/variable-web-typo/" target="_blank" rel="noopener">测试网站</a>，在这个网站上，我限制颜色风格，换句话说，我仅仅用了4中左右的颜色来表现网站的层次感，然后用了多大18中的字体去丰富网站。在我看来，这样比减少样式风格更加简介和独特。你可以点击右下角按钮来切换不同的字体主题，获得不同的体验。</p>
+<p><img src="https://foxdaxian.github.io/assets/02_variableFonts/variable-fonts-on-the-web-demo-page-its-time-for-variable-web-typography.jpg" alt="资源"></p>
+<p align="center">一个使用字体变换改变网站风格的测试网站</p>
+
+<h4 id="更小的文件体积"><a href="#更小的文件体积" class="headerlink" title="更小的文件体积"></a>更小的文件体积</h4><p>vf字体用更小的文件带来更多的可选风格。比如你想使用三四种不同粗细的字体，你可以用vf字体来获得更小文件体积的收益。举个例子：<a href="https://sz-magazin.sueddeutsche.de/" target="_blank" rel="noopener">Süddeutsche Zeitung Magazin</a><br>该网站的字体加起来一共有236kb大小，其中四中不同粗细的字体加起来共166kb，如果换用vf字体，可以较少到80kb，<strong>足足减少了50%！</strong></p>
+<p><img src="https://foxdaxian.github.io/assets/02_variableFonts/web-fonts-loaded-for-sz-magazin-sueddeutsche-de.jpg" alt="资源"></p>
+<p align="center">如果使用vf字体，至少可以节约一半的带宽</p>
+
+<h4 id="细颗粒度的控制"><a href="#细颗粒度的控制" class="headerlink" title="细颗粒度的控制"></a>细颗粒度的控制</h4><p>vf字体在如何渲染字体上提供细颗粒度的控制，你可以设置<code>font-weight:430</code>来提供更好地效果。因为这是一个可选的，所以像<code>font-weight:bold</code>这样的方式，仍然是奏效的</p>
+<h4 id="更好地文字适配"><a href="#更好地文字适配" class="headerlink" title="更好地文字适配"></a>更好地文字适配</h4><p>如果vf字体提供<code>宽窄轴</code>操作能力，你可以让文字在移动设备上有更好的可读性。在宽一点的屏幕上，也能更好地利用空间。这个例子可以很清晰的展示这种效果: <a href="https://zeichenschatz.net/demos/vf/width/" target="_blank" rel="noopener">browser example</a></p>
+<h4 id="与动画结合"><a href="#与动画结合" class="headerlink" title="与动画结合"></a>与动画结合</h4><p>所有<code>轴</code>都可以通过css来产生一个过渡的动画效果。这能让你的网站带来很酷和充满活力的效果。在<a href="https://developer.microsoft.com/en-us/microsoft-edge/testdrive/demos/variable-fonts/" target="_blank" rel="noopener">微软示例</a>页面中，你可以通过滚动来查看令人印象深刻的动画效果。</p>
+<h4 id="一种更重视视觉美的文字"><a href="#一种更重视视觉美的文字" class="headerlink" title="一种更重视视觉美的文字"></a>一种更重视视觉美的文字</h4><p>这个概念来自印刷技术，通常指在小字号的时候更加可读，大字号的时候更加富有个性。在金属活字时期(使用金属作为载体的活字印刷术)，只能通过修改的文字尺寸来进行优化。后来，通过数字化技术，你可以设计一个适配所有尺寸的字体。现在相同的情况随着vf字体的出现得以解决。例如，小字号的时候笔画可以更粗一点，这意味着更低的对比度使可读性更高。另一方面，当大字号的情况下，空间更多，所以有更多的操纵性，和对比度。类似的变化在vf字体中可以在单一文件内逐渐产生。<br><img src="https://foxdaxian.github.io/assets/02_variableFonts/variable-font-optical-size-voto-serif-variable.png" alt="资源"></p>
+<h3 id="怎么在web上使用variable-fonts？"><a href="#怎么在web上使用variable-fonts？" class="headerlink" title="怎么在web上使用variable fonts？"></a><a id="part_five">怎么在web上使用variable fonts？</a></h3><ol>
+<li><p>找到可用的vf字体<br> 这个技术还是非常积极地，所以，如果你想使用它，你首先要找到相关资源。这有一个<a href="http://v-fonts.com/" target="_blank" rel="noopener">资源</a>可以供你使用，在这个网站里你能尝试很多vf字体，很多都是在github开源，并且可以直接下载的。<a href="https://docs.google.com/spreadsheets/d/1ycxOqpcPA9NmCWcNbmxiY-KHEh820MucI1eO6QkKLOE/htmlview#gid=0" target="_blank" rel="noopener">这也有一些很不错的资源</a></p>
+</li>
+<li><p>整合到你的网站中的样式表内<br> 2018上半年，超过一般的浏览器已经<a href="https://caniuse.com/#search=variable%20fonts" target="_blank" rel="noopener">支持</a>的很好了。</p>
+<p> 通过<code>@font-face</code>引入到页面内：</p>
+ <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@<span class="keyword">font-face</span> &#123;</span><br><span class="line">    <span class="attribute">font-family</span>: <span class="string">'VennVF'</span>;</span><br><span class="line">    <span class="attribute">src</span>: <span class="built_in">url</span>(<span class="string">'VennVF_W.woff2'</span>) <span class="built_in">format</span>(<span class="string">'woff2-variations'</span>),</span><br><span class="line">        <span class="built_in">url</span>(<span class="string">'VennVF_W.woff2'</span>) <span class="built_in">format</span>(<span class="string">'woff2'</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p> 找到字体可变<code>轴</code>和可变范围，根据设计的不同的vf都有不同的<code>轴</code>和不同的范围，如果你不知道vf字体能做什么改变，你可以使用<a href="https://wakamaifondue.com/" target="_blank" rel="noopener">在线工具</a>，他也可以帮你生成现成的css。<br> 然后我们进行css的开发，不过在这之前，先说一下即将在css4字体模块中增加的可以设置vf字体的<code>高级属性</code>：</p>
+<ul>
+<li><p><code>font-weight</code>：可以设置1-999的任意数值</p>
+</li>
+<li><p><code>font-stretch</code>：是一个百分比的值，100%是正常的，50%是紧缩的，200%是拉伸的，其对应的关键字应该可以使用，这对印刷来说是可怕的，因为它不能拉伸字体，拉伸字体会导致不好的结果，但是vf的改变是在涉及范围内的拉伸，是可以接受的。</p>
+</li>
+<li><p><code>font-style</code>：一个倾斜的属性，从-90deg到90deg，当然关键字也是可以使用。90deg看起来是奇怪的，8deg是大部分字体中采用的最大值。</p>
+</li>
+<li><p><code>font-optical-sizing</code>：这是一个新的属性，有两个可选属性<code>auto</code>和<code>none</code>。一般来说，浏览器会设置为auto，但你也可以设置为none</p>
+<p>不是所有vf字体都能控制上面的属性，这得根据字体的设计和可用范围来决定。我做了一些测试，safari支持<code>font-weight</code>和<code>font-stretch</code>，并且，如果optical可用，它会自动打开optical sizing。但是使用<code>font-style: italic</code>的结果是，没有更新vf字体的italic<code>轴</code>范围。</p>
+<p>只有在sarari上，这些高级属性兼容的还可以。所以，如果想保证稳定性，你需要使用一个低级的属性：<code>font-variation-settings</code>，你可以设置四部分，其实和上面的差不多。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">p</span> &#123;</span><br><span class="line">	<span class="attribute">font-family</span>: <span class="string">"VennVF"</span>;</span><br><span class="line">	<span class="attribute">font-variation-settings</span>: <span class="string">"wght"</span> <span class="number">550</span>, <span class="string">"wdth"</span> <span class="number">125</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码改变字体粗细为550，还有宽窄为125。在不远的将来，你或许可以使用高级属性来得到同样的效果：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">p</span> &#123;</span><br><span class="line">	<span class="attribute">font-family</span>: <span class="string">"VennVF"</span>;</span><br><span class="line">	<span class="attribute">font-weight</span>: <span class="number">550</span>;</span><br><span class="line">	<span class="attribute">font-stretch</span>: <span class="number">125%</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当然，vf字体其实还有更多的自定义<code>轴</code>可以使用，都可以使用<code>font-variation-setting</code>属性来设置：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">h1</span> &#123;</span><br><span class="line">	<span class="attribute">font-family</span>: <span class="string">'VennVF'</span>, sans-serif;</span><br><span class="line">	<span class="attribute">font-variation-settings</span>: <span class="string">"TRMC"</span> <span class="number">0</span>, <span class="string">"SKLA"</span> <span class="number">0</span>, <span class="string">"SKLB"</span> <span class="number">0</span>, <span class="string">"TRME"</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>效果看起来像这样：</p>
+<p><img src="https://foxdaxian.github.io/assets/02_variableFonts/variable-font-decovar-coustom-axis-morphing.gif" alt="资源"></p>
+</li>
+</ul>
+</li>
+<li><p>兼容不支持vf字体的浏览器</p>
+<p> 如果你现在就想使用vf字体的话，在不支持的版本上，网站风格会和你想象中的完全不一样，所以我们需要一个回退方案，这个利用的css的特性查询功能：</p>
+ <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">@<span class="keyword">supports</span> (font-variation-settings: normar)&#123;</span><br><span class="line">	<span class="comment">/* set some property */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p> <a href="https://caniuse.com/#feat=css-featurequeries" target="_blank" rel="noopener">点击查看@supports的各浏览器兼容</a>，个人认为兼容还是可以的。<br> 然后，像下面这样设置vf，就可以适配大部分浏览器了：</p>
+ <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line">	<span class="attribute">font-family</span>: <span class="string">'Venn'</span>, sans-serif;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@<span class="keyword">supports</span> (font-variation-settings: normal) &#123;</span><br><span class="line">	<span class="selector-tag">body</span> &#123;</span><br><span class="line">		<span class="attribute">font-family</span>: <span class="string">'VennVF'</span>, sans-serif;</span><br><span class="line">		&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p> 解释一下：首先上面的body为正常的字体，下面为积极地做法，如果支持<code>font-variation-settings</code>，那么就采取vf字体，然后可以设置一些具体的字体细节。否则会静默失败。<br> 可能有人会用:not来配合@supports，有时候匹配成功不是因为not，而是因为@supports不支持，所以尽量避免。</p>
+</li>
+</ol>
+<h3 id="有哪些潜在的缺陷需要注意？"><a href="#有哪些潜在的缺陷需要注意？" class="headerlink" title="有哪些潜在的缺陷需要注意？"></a><a id="part_six">有哪些潜在的缺陷需要注意？</a></h3><p>vf字体为web字体带来了新的活力和发灰控件，但是，一项新的技术往往会伴随着很多我们需要注意的问题。</p>
+<ul>
+<li>太多的选项</li>
+<li>更多的与web无关的字体只是需要学习</li>
+<li>vf字体不一定总会对性能有所提高</li>
+<li>你也许仍然需要多个字体文件以适配某些字体，比如罗马字体和斜体</li>
+<li>可能会因为著作权、许可证而造成其他问题</li>
+</ul>
+<h3 id="variable-fonts何时才会相对成熟？"><a href="#variable-fonts何时才会相对成熟？" class="headerlink" title="variable fonts何时才会相对成熟？"></a><a id="part_seven">variable fonts何时才会相对成熟？</a></h3><p>2018年大部分浏览器都已经支持了，很快移动设备也会支持，因为vf会节约很大的带宽。我期待2019年vf字体能够替换静态字体被用在各个web站点中。adobe和谷歌会在推动这项技术中一定会占主要部分，因为他们同样需要减少字体文件大小，虽然不知道这件事什么时候会发生。但是一定会很快。<br>我对文件大小没有太大的兴趣，我更多的兴趣实在使用更少的样色主题和更多的字体去设置网站的风格，像这个<a href="https://zeichenschatz.net/demos/vf/variable-web-typo/" target="_blank" rel="noopener">网站</a>。</p>
+<h5 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h5><ul>
+<li><a href="https://www.zeichenschatz.net/typografie/implementing-a-variable-font-with-fallback-web-fonts.html" target="_blank" rel="noopener">更好地方案去使用vf字体</a></li>
+<li><a href="https://www.zeichenschatz.net/typografie/how-to-start-with-variable-fonts-on-the-web.html" target="_blank" rel="noopener">vf字体详细说明</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/35822169" target="_blank" rel="noopener">可变字体</a></li>
+<li><a href="https://thetype.com/page/8/?s=%E5%AD%97%E4%BD%93" target="_blank" rel="noopener">字体历史</a></li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/memory/tags/frontend/" rel="tag"># frontend</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/memory/2021/05/09/vue/" rel="next" title="vue简析">
+                <i class="fa fa-chevron-left"></i> vue简析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/memory/2021/05/09/treeShaking/" rel="prev" title="什么是tree shaking，它是怎样工作的？">
+                什么是tree shaking，它是怎样工作的？ <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">FoxDaxian</p>
+              <div class="site-description motion-element" itemprop="description">遇到好玩的，稀奇的，新鲜的，记录下来，分享出去。</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/memory/archives/">
+                
+                    <span class="site-state-item-count">40</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">categories</span>
+                  
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#原文链接"><span class="nav-number">1.</span> <span class="nav-text">原文链接</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是variable-fonts"><span class="nav-number">1.1.</span> <span class="nav-text">什么是variable fonts?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#variable-fonts能做什么？"><span class="nav-number">1.2.</span> <span class="nav-text">variable fonts能做什么？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#拉伸或者扭曲字体会不会有不好的效果和影响？"><span class="nav-number">1.3.</span> <span class="nav-text">拉伸或者扭曲字体会不会有不好的效果和影响？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#variable-fonts有哪些优点？"><span class="nav-number">1.4.</span> <span class="nav-text">variable fonts有哪些优点？</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#最明显的优点，或许你已经想到了，就是提供丰富的自定义web字体"><span class="nav-number">1.4.0.1.</span> <span class="nav-text">最明显的优点，或许你已经想到了，就是提供丰富的自定义web字体</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#更小的文件体积"><span class="nav-number">1.4.1.</span> <span class="nav-text">更小的文件体积</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#细颗粒度的控制"><span class="nav-number">1.4.2.</span> <span class="nav-text">细颗粒度的控制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#更好地文字适配"><span class="nav-number">1.4.3.</span> <span class="nav-text">更好地文字适配</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#与动画结合"><span class="nav-number">1.4.4.</span> <span class="nav-text">与动画结合</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#一种更重视视觉美的文字"><span class="nav-number">1.4.5.</span> <span class="nav-text">一种更重视视觉美的文字</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#怎么在web上使用variable-fonts？"><span class="nav-number">1.5.</span> <span class="nav-text">怎么在web上使用variable fonts？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#有哪些潜在的缺陷需要注意？"><span class="nav-number">1.6.</span> <span class="nav-text">有哪些潜在的缺陷需要注意？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#variable-fonts何时才会相对成熟？"><span class="nav-number">1.7.</span> <span class="nav-text">variable fonts何时才会相对成熟？</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#参考链接"><span class="nav-number">1.7.0.1.</span> <span class="nav-text">参考链接</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">FoxDaxian</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/memory/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/memory/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/memory/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/memory/js/utils.js?v=7.2.0"></script>
+
+  <script src="/memory/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/memory/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+  
+  <script src="/memory/js/scrollspy.js?v=7.2.0"></script>
+<script src="/memory/js/post-details.js?v=7.2.0"></script>
+
+
+
+  
+
+
+  <script src="/memory/js/next-boot.js?v=7.2.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

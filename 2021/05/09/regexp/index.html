@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/memory/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/memory/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/memory/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/memory/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/memory/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/memory/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/memory/',
+    scheme: 'Muse',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="所有的语言的正则表达式还有一些更强大的功能，比如 1、子表达式的索引和回溯2、回溯引用在replace中的应用3、（肯定 | 否定）向前查找4、（肯定 | 否定）向后查找 ===&amp;gt; JS不支持5、条件查找 ===&amp;gt;JS不支持 Orz…… 下面说的均是JS的正则  一、子表达式的索引和回溯 JS中用括号括起来的大部分都可以成为一个子表达式（按照先后顺序从1到n），而整个正则则是第0个子表">
+<meta name="keywords" content="frontend">
+<meta property="og:type" content="article">
+<meta property="og:title" content="正则表达式">
+<meta property="og:url" content="http://yoursite.com/2021/05/09/regexp/index.html">
+<meta property="og:site_name" content="fox的博客">
+<meta property="og:description" content="所有的语言的正则表达式还有一些更强大的功能，比如 1、子表达式的索引和回溯2、回溯引用在replace中的应用3、（肯定 | 否定）向前查找4、（肯定 | 否定）向后查找 ===&amp;gt; JS不支持5、条件查找 ===&amp;gt;JS不支持 Orz…… 下面说的均是JS的正则  一、子表达式的索引和回溯 JS中用括号括起来的大部分都可以成为一个子表达式（按照先后顺序从1到n），而整个正则则是第0个子表">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20190722172802.png">
+<meta property="og:updated_time" content="2021-05-09T23:37:00.845Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="正则表达式">
+<meta name="twitter:description" content="所有的语言的正则表达式还有一些更强大的功能，比如 1、子表达式的索引和回溯2、回溯引用在replace中的应用3、（肯定 | 否定）向前查找4、（肯定 | 否定）向后查找 ===&amp;gt; JS不支持5、条件查找 ===&amp;gt;JS不支持 Orz…… 下面说的均是JS的正则  一、子表达式的索引和回溯 JS中用括号括起来的大部分都可以成为一个子表达式（按照先后顺序从1到n），而整个正则则是第0个子表">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20190722172802.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2021/05/09/regexp/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>正则表达式 | fox的博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/memory/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">fox的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">github地址 -> https://github.com/FoxDaxian</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/memory/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/memory/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/memory/2021/05/09/regexp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="FoxDaxian">
+      <meta itemprop="description" content="遇到好玩的，稀奇的，新鲜的，记录下来，分享出去。">
+      <meta itemprop="image" content="/memory/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fox的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">正则表达式
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2021-05-09 23:37:00" itemprop="dateCreated datePublished" datetime="2021-05-09T23:37:00+00:00">2021-05-09</time>
+            </span>
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/memory/categories/介绍/" itemprop="url" rel="index"><span itemprop="name">介绍</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>所有的语言的正则表达式还有一些更强大的功能，比如</p>
+<p>1、子表达式的索引和回溯<br>2、回溯引用在replace中的应用<br>3、（肯定 | 否定）向前查找<br>4、（肯定 | 否定）向后查找 ===&gt; JS不支持<br>5、条件查找 ===&gt;JS不支持 Orz……</p>
+<p>下面说的均是JS的正则</p>
+<hr>
+<p>一、子表达式的索引和回溯</p>
+<p>JS中用括号括起来的大部分都可以成为一个子表达式（按照先后顺序从1到n），而整个正则则是第0个子表达式</p>
+<p>例如：var reg = /(好).*?\1/g;  ===&gt;  这里的“（好）”就是正个reg的  第一个  子表达式，后面的“\1”就代表着前面的第一个子表达式，因为是 1 嘛！</p>
+<p>让我们来匹配点什么：var str =”你好吗？我很好！”;</p>
+<p>str.match(reg) ===&gt; 返回结果：[“好吗？我很好”]</p>
+<p>这里看到了，从第一个“好”，匹配到第二个好，这也就是我理解的子表达式的索引和回溯（我是这么叫它的）。</p>
+<p>补一句，reg里面的“*?”是懒惰匹配，就是尽量少的匹配，懒惰匹配的原理就是在修饰符的后面几个“？”，因为“？”是匹配0次或者1次嘛，so你懂得。</p>
+<p>二、回溯引用在replace中的应用</p>
+<p>直接从简单的例子入手：</p>
+<p>正则表达式：var reg = /-(\w)/g;</p>
+<p>匹配str：var str =”my-love”;</p>
+<p>输出：console.log(str.replace(reg,function($0,$1) {</p>
+<p>console.log($0);</p>
+<p>console.log($1);</p>
+<p>}));</p>
+<p>结果如下图：</p>
+<p>控制台结果</p>
+<p>个人分析图如下：</p>
+<p><img src="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20190722172802.png" alt></p>
+<p>分析图</p>
+<p>相信看了上面的分析，大家也能明白个七八，只要在replace中的函数中 return $1.toLowerCase()，是不是就完成了将带横线的字符转为驼峰字符的功能？大家试一下就会了解。</p>
+<p>这里面的“$1”我理解为正则里面的“/1”，也就是说和“/1”的思路是差不多的，只不过应该用到replace中，不过好像也只能用到replace中，其他方面我还没接触到。</p>
+<p>三、（肯定 | 否定）向前查找</p>
+<p>先问大家一个问题，如果给大家一段话，里面有数字、中文和40$，要求匹配$前面的数字并且不能匹配后面没有$符号的数字，大家会如何匹配呢？（先想一想）</p>
+<p>就上面的问题来举例子，从例子入手：</p>
+<p>匹配的str：var str =”我出50$买灵能100%第二季”;</p>
+<p>正则表达式：var reg = /\d+(?=$)/g;</p>
+<p>输出：console.log(str.match(reg));</p>
+<p>结果为：[“50”]</p>
+<p>这个结果就是我们想要的，而“(?=$)”就是所谓的（肯定）正向查找。</p>
+<p>我的理解是：“(?=$)”的“?=”的“=”后面是要匹配的关键字，如果匹配到，就用“\d+”（也就是(?=$)之前的）来匹配关键字之前的字符串或者其他。但是最后不会包含这个关键字哦。现在看起来是不是特别贴合这个名字“向前查找”。</p>
+<p>那么（否定）向前查找呢？</p>
+<p>还是那个例子只不过把正则表达式换一下</p>
+<p>正则表达式：var reg = /\d+(?!$)/g; ===&gt; 注意 这里 将“?=”变为“?!”</p>
+<p>返回结果：[“5”, “100”]</p>
+<p>为什么是这个结果呢？因为是否定的，也就是取反，从“?!”中的“!”可以看出，匹配的是 数字 加 $ 之外的数字，那么为什么会返回5呢，这个我猜想是懒惰匹配的，所以会匹配“0$”，将前面的“5”抛弃了，并且返回了被匹配字符串的所以其他数字，就是这样喵。</p>
+<p>四、（肯定 | 否定）向后查找 和 条件查找不支持，所以就没必要说了。有兴趣的可以自己去看看。</p>
+<p>以上内容均属个人简洁，不对的地方望指出，最后祝大家在前端之路上越来越顺利。</p>
+<p>没有了<del>~</del></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/memory/tags/frontend/" rel="tag"># frontend</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/memory/2021/05/09/rem/" rel="next" title="rem移动端适配">
+                <i class="fa fa-chevron-left"></i> rem移动端适配
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/memory/2021/05/09/webpack/" rel="prev" title="webpack - 优化阻塞渲染的css">
+                webpack - 优化阻塞渲染的css <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">FoxDaxian</p>
+              <div class="site-description motion-element" itemprop="description">遇到好玩的，稀奇的，新鲜的，记录下来，分享出去。</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/memory/archives/">
+                
+                    <span class="site-state-item-count">40</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">categories</span>
+                  
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">FoxDaxian</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/memory/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/memory/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/memory/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/memory/js/utils.js?v=7.2.0"></script>
+
+  <script src="/memory/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/memory/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+  
+  <script src="/memory/js/scrollspy.js?v=7.2.0"></script>
+<script src="/memory/js/post-details.js?v=7.2.0"></script>
+
+
+
+  
+
+
+  <script src="/memory/js/next-boot.js?v=7.2.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

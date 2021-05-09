@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/memory/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/memory/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/memory/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/memory/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/memory/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/memory/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/memory/',
+    scheme: 'Muse',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="概念流（stream）是 Node.js 中处理流式数据的抽象接口。 stream 模块用于构建实现了流接口的对象。 Node.js 提供了多种流对象。 例如，HTTP 服务器的请求和 process.stdout 都是流的实例。 流可以是可读的、可写的、或者可读可写的。 所有的流都是 EventEmitter 的实例。 访问 stream 模块： 1const stream = require(">
+<meta name="keywords" content="node">
+<meta property="og:type" content="article">
+<meta property="og:title" content="node可读流">
+<meta property="og:url" content="http://yoursite.com/2021/05/09/readStream/index.html">
+<meta property="og:site_name" content="fox的博客">
+<meta property="og:description" content="概念流（stream）是 Node.js 中处理流式数据的抽象接口。 stream 模块用于构建实现了流接口的对象。 Node.js 提供了多种流对象。 例如，HTTP 服务器的请求和 process.stdout 都是流的实例。 流可以是可读的、可写的、或者可读可写的。 所有的流都是 EventEmitter 的实例。 访问 stream 模块： 1const stream = require(">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20191014212453.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20191014220028.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20191014220036.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20191014220334.gif">
+<meta property="og:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20191014221044.gif">
+<meta property="og:updated_time" content="2021-05-09T23:37:00.845Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="node可读流">
+<meta name="twitter:description" content="概念流（stream）是 Node.js 中处理流式数据的抽象接口。 stream 模块用于构建实现了流接口的对象。 Node.js 提供了多种流对象。 例如，HTTP 服务器的请求和 process.stdout 都是流的实例。 流可以是可读的、可写的、或者可读可写的。 所有的流都是 EventEmitter 的实例。 访问 stream 模块： 1const stream = require(">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20191014212453.jpg">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2021/05/09/readStream/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>node可读流 | fox的博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/memory/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">fox的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">github地址 -> https://github.com/FoxDaxian</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/memory/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/memory/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/memory/2021/05/09/readStream/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="FoxDaxian">
+      <meta itemprop="description" content="遇到好玩的，稀奇的，新鲜的，记录下来，分享出去。">
+      <meta itemprop="image" content="/memory/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fox的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">node可读流
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2021-05-09 23:37:00" itemprop="dateCreated datePublished" datetime="2021-05-09T23:37:00+00:00">2021-05-09</time>
+            </span>
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/memory/categories/初出茅庐/" itemprop="url" rel="index"><span itemprop="name">初出茅庐</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><p>流（stream）是 Node.js 中处理流式数据的抽象接口。 stream 模块用于构建实现了流接口的对象。</p>
+<p>Node.js 提供了多种流对象。 例如，HTTP 服务器的请求和 process.stdout 都是流的实例。</p>
+<p>流可以是可读的、可写的、或者可读可写的。 所有的流都是 EventEmitter 的实例。</p>
+<p>访问 stream 模块：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> stream = <span class="built_in">require</span>(<span class="string">'stream'</span>);</span><br></pre></td></tr></table></figure>
+
+<p>尽管理解流的工作方式很重要，但是 stream 模块主要用于开发者创建新类型的流实例。 对于以消费流对象为主的开发者，极少需要直接使用 stream 模块。</p>
+<p>Node.js 中有四种基本的流类型：</p>
+<ul>
+<li>Writable - 可写入数据的流（例如 fs.createWriteStream()）。</li>
+<li>Readable - 可读取数据的流（例如 fs.createReadStream()）。</li>
+<li>Duplex - 可读又可写的流（例如 net.Socket）。</li>
+<li>Transform - 在读写过程中可以修改或转换数据的 Duplex 流（例如 zlib.createDeflate()）。</li>
+</ul>
+<p>此外，该模块还包括实用函数 stream.pipeline()、stream.finished() 和 stream.Readable.from()。</p>
+<p>盗图<br><img src="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20191014212453.jpg" alt></p>
+<h3 id="如何获取内存中的流"><a href="#如何获取内存中的流" class="headerlink" title="如何获取内存中的流"></a>如何获取内存中的流</h3><p>可写流和可读流都会在内部的缓冲器中存储数据，可以分别使用的 writable.writableBuffer 或 readable.readableBuffer 来获取。<br><a href="http://nodejs.cn/api/stream.html#stream_buffering" target="_blank" rel="noopener">细节</a></p>
+<h3 id="可读流"><a href="#可读流" class="headerlink" title="可读流"></a>可读流</h3><h4 id="两种模式"><a href="#两种模式" class="headerlink" title="两种模式"></a>两种模式</h4><ul>
+<li>流动模式(不用打，自己动)：数据<code>自动</code>从底层系统读取，并通过EventEmitter接口的事件尽可能快的提供刚给应用程序</li>
+<li>暂停模式(打一下，动一下)：必须显示调用<code>stream.read()</code>读取数据块</li>
+</ul>
+<p>其实，所有可读流<code>初始</code>的时候都处于<code>暂停模式</code>，不过可以通过以下方法切换到流动模式</p>
+<ul>
+<li>添加 <code>data</code> 事件句柄。</li>
+<li>调用 <code>stream.resume()</code> 方法。</li>
+<li>调用 <code>stream.pipe()</code> 方法将数据发送到可写流。</li>
+</ul>
+<p>当然，能切到<code>暂停模式</code>，肯定也能切到<code>流动模式</code></p>
+<ul>
+<li>如果没有管道目标，则调用 <code>stream.pause()</code></li>
+<li>如果有管道目标，则移除所有的管道目标。调用<code>stream.unpipe()</code>可以移除多个管道目标。</li>
+</ul>
+<p>为了向后兼容，移除 ‘data’ 事件句柄不会自动地暂停流。</p>
+<p>如果有管道目标，一旦目标变为 drain 状态并请求接收数据时，则调用 stream.pause() 也不能保证流会保持暂停模式。</p>
+<p>如果可读流切换到流动模式，且没有可用的消费者来处理数据，则数据将会丢失。 例如，当调用 readable.resume() 时，没有监听 ‘data’ 事件或 ‘data’ 事件句柄已移除。</p>
+<p>添加 <code>readable</code> 事件句柄会使流自动停止流动，并通过 <code>readable.read()</code> 消费数据。 如果 <code>readable</code> 事件句柄被移除，且存在 <code>data</code> 事件句柄，则流会再次开始流动</p>
+<h3 id="demo"><a href="#demo" class="headerlink" title="demo"></a>demo</h3><h4 id="流动模式"><a href="#流动模式" class="headerlink" title="流动模式"></a>流动模式</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>)</span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>)</span><br><span class="line"><span class="keyword">const</span> rs = fs.createReadStream(path.join(__dirname, <span class="string">'./1.txt'</span>))</span><br><span class="line"></span><br><span class="line">rs.setEncoding(<span class="string">'utf8'</span>)</span><br><span class="line"></span><br><span class="line">rs.on(<span class="string">'data'</span>, (data) =&gt; &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(data)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h4 id="暂停模式"><a href="#暂停模式" class="headerlink" title="暂停模式"></a>暂停模式</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>)</span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>)</span><br><span class="line"><span class="keyword">const</span> rs = fs.createReadStream(path.join(__dirname, <span class="string">'./1.txt'</span>))</span><br><span class="line"></span><br><span class="line">rs.setEncoding(<span class="string">'utf8'</span>)</span><br><span class="line"></span><br><span class="line">rs.on(<span class="string">'readable'</span>, () =&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> d = rs.read(<span class="number">1</span>) <span class="comment">// 要读取的数据的字节数。</span></span><br><span class="line">    <span class="built_in">console</span>.log(d)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="read方法：-参数-可选-size"><a href="#read方法：-参数-可选-size" class="headerlink" title="read方法： 参数 可选 [size]"></a>read方法： 参数 可选 [size]</h3><p>如果没有指定 size 参数，则返回内部缓冲中的所有数据。</p>
+<p>使用 <code>readable.read()</code> 处理数据时， while 循环是必需的。<br>read方法消耗的是内存中的数据</p>
+<p>当read方法返回的是<code>null</code>的时候，会触发 流监听的 <code>end</code> 事件<br>不使用read消耗内存中的流数据，则不会触发end</p>
+<p>预览一波</p>
+<p><img src="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20191014220028.png" alt></p>
+<p><img src="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20191014220036.png" alt></p>
+<h3 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">process.stdin.setEncoding(<span class="string">'utf8'</span>);</span><br><span class="line"></span><br><span class="line">process.stdin.on(<span class="string">'readable'</span>, () =&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> chunk;</span><br><span class="line">    <span class="keyword">while</span> ((chunk = process.stdin.read()) !== <span class="literal">null</span>) &#123;</span><br><span class="line">        process.stdout.write(<span class="string">`数据: <span class="subst">$&#123;chunk&#125;</span>长度<span class="subst">$&#123;chunk.length&#125;</span>\n`</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">process.stdin.on(<span class="string">'end'</span>, () =&gt; &#123;</span><br><span class="line">    process.stdout.write(<span class="string">'结束\n'</span>);</span><br><span class="line">    process.exit(<span class="number">1</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>上面的代码作用是读取用户在terminal上的输出，然后输出内容和长度，但是执行的时候，总是无法执行到end，不仅如此，就算内容为空，返回的长度也不为0，这让我很疑惑。</p>
+<p><img src="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20191014220334.gif" alt></p>
+<p>最后发现是坚挺的<code>end</code>事件，只有当read方法返回为null的时候才会触发，所以没有触发，而问题就在于返回的内容是换行符，不同系统下换行符不一样，mac下是<code>\n</code>，所以我们需要处理一下read返回的内容，然后手动end<br>查看字符串中回车符可以使用:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="built_in">JSON</span>.stringify(chunk));</span><br></pre></td></tr></table></figure>
+
+<p>修正后的代码为:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">process.stdin.setEncoding(<span class="string">'utf8'</span>);</span><br><span class="line"></span><br><span class="line">process.stdin.on(<span class="string">'readable'</span>, () =&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> chunk;</span><br><span class="line">    <span class="keyword">while</span> ((chunk = process.stdin.read()) !== <span class="literal">null</span>) &#123;</span><br><span class="line">        chunk = chunk.replace(<span class="regexp">/\n/g</span>, <span class="string">''</span>);</span><br><span class="line">        <span class="keyword">if</span> (!chunk.length) &#123;</span><br><span class="line">            <span class="built_in">console</span>.log(<span class="string">'输入为空'</span>);</span><br><span class="line">            <span class="keyword">return</span> process.stdin.emit(<span class="string">'end'</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        process.stdout.write(<span class="string">`数据: <span class="subst">$&#123;chunk&#125;</span>长度<span class="subst">$&#123;chunk.length&#125;</span>\n`</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">process.stdin.on(<span class="string">'end'</span>, () =&gt; &#123;</span><br><span class="line">    process.stdout.write(<span class="string">'结束\n'</span>);</span><br><span class="line">    process.exit(<span class="number">1</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>执行结果:<br><img src="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20191014221044.gif" alt></p>
+<p><a href="http://nodejs.cn/api/stream.html#stream_readable_streams" target="_blank" rel="noopener">中文文档</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/memory/tags/node/" rel="tag"># node</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/memory/2021/05/09/webpack/" rel="next" title="webpack - 优化阻塞渲染的css">
+                <i class="fa fa-chevron-left"></i> webpack - 优化阻塞渲染的css
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/memory/2021/05/09/qps&tps/" rel="prev" title="qps和tps">
+                qps和tps <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">FoxDaxian</p>
+              <div class="site-description motion-element" itemprop="description">遇到好玩的，稀奇的，新鲜的，记录下来，分享出去。</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/memory/archives/">
+                
+                    <span class="site-state-item-count">40</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">categories</span>
+                  
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#概念"><span class="nav-number">1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何获取内存中的流"><span class="nav-number">2.</span> <span class="nav-text">如何获取内存中的流</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#可读流"><span class="nav-number">3.</span> <span class="nav-text">可读流</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#两种模式"><span class="nav-number">3.1.</span> <span class="nav-text">两种模式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#demo"><span class="nav-number">4.</span> <span class="nav-text">demo</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#流动模式"><span class="nav-number">4.1.</span> <span class="nav-text">流动模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#暂停模式"><span class="nav-number">4.2.</span> <span class="nav-text">暂停模式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#read方法：-参数-可选-size"><span class="nav-number">5.</span> <span class="nav-text">read方法： 参数 可选 [size]</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#遇到的问题"><span class="nav-number">6.</span> <span class="nav-text">遇到的问题</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">FoxDaxian</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/memory/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/memory/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/memory/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/memory/js/utils.js?v=7.2.0"></script>
+
+  <script src="/memory/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/memory/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+  
+  <script src="/memory/js/scrollspy.js?v=7.2.0"></script>
+<script src="/memory/js/post-details.js?v=7.2.0"></script>
+
+
+
+  
+
+
+  <script src="/memory/js/next-boot.js?v=7.2.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

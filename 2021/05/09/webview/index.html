@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/memory/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/memory/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/memory/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/memory/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/memory/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/memory/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/memory/',
+    scheme: 'Muse',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="浏览器是用户的窗口，而这个窗口则是前端工程师们的舞台。据统计，目前常见的浏览器有：  谷歌 火狐 ie、edge opera safari uc qq 搜狗 360 百度  浏览器占比 对于前端来说，浏览器是一台转换代码的机器，将代码转换成用户可以看到的界面，但是，如何解释和执行代码却因为浏览器的种类繁多而千差万别。而决定如何解释和执行代码的就是浏览器内核(排版引擎 | 浏览器引擎  |  页面渲">
+<meta name="keywords" content="frontend">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浏览器内核">
+<meta property="og:url" content="http://yoursite.com/2021/05/09/webview/index.html">
+<meta property="og:site_name" content="fox的博客">
+<meta property="og:description" content="浏览器是用户的窗口，而这个窗口则是前端工程师们的舞台。据统计，目前常见的浏览器有：  谷歌 火狐 ie、edge opera safari uc qq 搜狗 360 百度  浏览器占比 对于前端来说，浏览器是一台转换代码的机器，将代码转换成用户可以看到的界面，但是，如何解释和执行代码却因为浏览器的种类繁多而千差万别。而决定如何解释和执行代码的就是浏览器内核(排版引擎 | 浏览器引擎  |  页面渲">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/07_browser_webview/browser-construct.png">
+<meta property="og:updated_time" content="2021-05-09T23:37:00.845Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="浏览器内核">
+<meta name="twitter:description" content="浏览器是用户的窗口，而这个窗口则是前端工程师们的舞台。据统计，目前常见的浏览器有：  谷歌 火狐 ie、edge opera safari uc qq 搜狗 360 百度  浏览器占比 对于前端来说，浏览器是一台转换代码的机器，将代码转换成用户可以看到的界面，但是，如何解释和执行代码却因为浏览器的种类繁多而千差万别。而决定如何解释和执行代码的就是浏览器内核(排版引擎 | 浏览器引擎  |  页面渲">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/07_browser_webview/browser-construct.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2021/05/09/webview/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>浏览器内核 | fox的博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/memory/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">fox的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">github地址 -> https://github.com/FoxDaxian</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/memory/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/memory/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/memory/2021/05/09/webview/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="FoxDaxian">
+      <meta itemprop="description" content="遇到好玩的，稀奇的，新鲜的，记录下来，分享出去。">
+      <meta itemprop="image" content="/memory/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fox的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">浏览器内核
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2021-05-09 23:37:00" itemprop="dateCreated datePublished" datetime="2021-05-09T23:37:00+00:00">2021-05-09</time>
+            </span>
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/memory/categories/原理/" itemprop="url" rel="index"><span itemprop="name">原理</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>浏览器是用户的窗口，而这个窗口则是前端工程师们的舞台。<br>据统计，目前常见的浏览器有：</p>
+<ul>
+<li>谷歌</li>
+<li>火狐</li>
+<li>ie、edge</li>
+<li>opera</li>
+<li>safari</li>
+<li>uc</li>
+<li>qq</li>
+<li>搜狗</li>
+<li>360</li>
+<li>百度</li>
+</ul>
+<p><a href="https://zh.wikipedia.org/wiki/%E7%BD%91%E9%A1%B5%E6%B5%8F%E8%A7%88%E5%99%A8#/media/File:Usage_share_of_web_browsers_(Source_StatCounter).svg" target="_blank" rel="noopener">浏览器占比</a></p>
+<p>对于前端来说，浏览器是一台转换代码的机器，将代码转换成用户可以看到的界面，但是，如何解释和执行代码却因为浏览器的种类繁多而千差万别。而决定如何解释和执行代码的就是浏览器内核(排版引擎 | 浏览器引擎  |  页面渲染引擎  | 渲染引擎)。</p>
+<p><img src="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/07_browser_webview/browser-construct.png" alt="浏览器结构"></p>
+<ol>
+<li>用户界面<br> 你能看到的，包括工具栏、导航栏、书签菜单等等</li>
+<li>浏览器引擎<br> 是一个可嵌入的组件，为渲染引擎提供高级接口。<br> 可以加载一个指定的URI，支持和历史记录相关的操作<br> 查询和修改渲染引擎</li>
+<li>渲染引擎<br> 显示请求的内容，比如解析html、css，并将解析后的render tree渲染到浏览器中</li>
+<li>网络<br> 用于网络调用，具有独立性，可在不同平台使用</li>
+<li>js解释器<br> 用来解释执行js代码，由于安全问题，浏览器引擎和渲染引擎可能会禁止掉某些js功能。</li>
+<li>xml解析器<br> 将xml文档解析成文档对象模型树，xml解析器是浏览器结构中复用最多的子系统之一，几乎所有的浏览器都复用现有的xml解析器，而不是从头开始</li>
+<li>显示后端<br> 显示后端提供绘图和窗口原语，包括用户界面控件集合、字体集合</li>
+<li>数据持久层<br> 数据持久层将会话相关的各种数据存储在硬盘上。比如书签，工具栏设置，比如cookies，安全证书，localstore</li>
+</ol>
+<p>一般来说，浏览器只有一个内核，但是为了ie，发明了双核浏览器，大部分都是<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br></pre></td><td class="code"><pre><span class="line">webkit是苹果研发的，chrome起初使用webkit，后来另起分支blink，并且越来越好</span><br><span class="line">[视频介绍](https://www.youtube.com/watch?v=DQPqZPTIESc&amp;t=8s)</span><br><span class="line"></span><br><span class="line">接着说说移动端的浏览器内核。</span><br><span class="line"></span><br><span class="line">首先移动端不像pc，网站都是前端开发的。移动端目前来说常用的有下面几种：</span><br><span class="line"></span><br><span class="line">|  |  native  |  rn、wx、flutter  | hybrid | webapp |</span><br><span class="line">| -- | -- | -- | -- | -- |</span><br><span class="line">| 跨平台 | 复杂 | 容易 | 容易 | 容易 |</span><br><span class="line">| 版本更新 | 慢 | 快 | 快 | 快 |</span><br><span class="line">| 性能和体验 | 最高 | 高 | 一般 | 一般 |</span><br><span class="line">| 学习和开发成本 | 很大 | 大 | 一般 | 一般 |</span><br><span class="line"></span><br><span class="line">这里拿和浏览器内核有关的```hybrid```和```webapp```来说，其余感兴趣的在做深入了解。</span><br><span class="line"></span><br><span class="line">介绍移动端内核之前，简单介绍一下hybrid和webapp，hybrid是native的webview容器中的webapp，webapp就是普通的页面。正因为有这个webview的关系，导致hybrid自诞生以来就比webapp多了一个初始化webview容器的这个损耗，所以才会有后面的rn，flutter等等。简单的解释下这个过程：</span><br><span class="line"></span><br><span class="line">在浏览器中，我们输入地址时，浏览器就可以加载页面。</span><br><span class="line"></span><br><span class="line">![浏览器结构](https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/07_browser_webview/borwser.png)</span><br><span class="line"></span><br><span class="line">在客户端中，首先需要花费时间初始化webview，才能加载页面。所以如果webview没有加载完毕，用户可能就会看到白屏影响体验。</span><br><span class="line"></span><br><span class="line">![浏览器结构](https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/07_browser_webview/webview.png)</span><br><span class="line"></span><br><span class="line">当然，也不是没有优化方案。比如：</span><br><span class="line">- 使用单例模式去初始化webview，这样只有在第一次的时候回慢一些，之后就没问题了，缺点就是内存消耗和怎么处理同时存在多个webview</span><br><span class="line">- 将网络请求相关交给native去做，也就是初始化webview和网络请求并行的方案，即客户端代理数据请求</span><br><span class="line">- dns采用和客户端api相同的域名，类似dns预解析</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">我们都知道手机有两大主类：Android和IOS。不过总的来说大部分都在使用webkit或者类webkit内核。</span><br><span class="line"></span><br><span class="line">webapp：</span><br><span class="line">- ios safari 使用webkit内核</span><br><span class="line">- android4.4之前使用webkit，4.4之后切换到了chromium（基于一个webkit的分支blink，是chrome的先行版）</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">webview(webkit内核+js引擎)：</span><br><span class="line">- ios8之前使用uiwebview，之后使用wkwebview</span><br><span class="line">- 安卓常用的有：</span><br><span class="line"></span><br><span class="line">安卓4.4之前的webkit内核和4.4之后的blink内核：</span><br><span class="line"></span><br><span class="line">|  |  webkit  |  chromium  |  备注  |</span><br><span class="line">| -- | -- | -- | -- |</span><br><span class="line">| html5test  |  278  |  434  | http://html5test.com/  |</span><br><span class="line">| 远程调试  |  不支持  |  支持  |  安卓4.4以上支持 |</span><br><span class="line">| 内存占用  |  小  |  大  |  相差20-30M左右  |</span><br><span class="line">| WebAudio  |  不支持  |  支持  |  Android 5.0及以上支持  |</span><br><span class="line">| WebGL  |  不支持  |  支持  |  Android 5.0及以上支持  |</span><br><span class="line">| WebRTC  |  不支持  |  支持  |  Android 5.0及以上支持  |</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">由于低版本安卓的有很多兼容的问题，所以一般会采用三方webview，常见的：</span><br><span class="line"></span><br><span class="line">| 类别 | 介绍 | 性能 | 特点 | html5test |</span><br><span class="line">| -- | -- | -- | -- | -- |</span><br><span class="line">| 系统自带webview | 安卓默认 | 一般 | 没有额外jar负担，原生api，不过兼容性差 | 一般 |</span><br><span class="line">| X5 webview | 腾讯出品 | 一般 | 兼容性好，可信度高，不过工作量会增大，并且不支持Cordova | 良好 |</span><br><span class="line">| crosswalk | 国外为安卓提供的一个融合webkit的方案 | 优 | 无兼容性，性能问题，支持Cordova，不过体积大 | 较佳 |</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">两个优化方案。</span><br><span class="line">### 首先是webp</span><br><span class="line"></span><br><span class="line">3w方法：</span><br><span class="line">1. 什么是webp</span><br><span class="line">2. webp是怎么做的</span><br><span class="line">3. 如何使用webp</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#### 什么是webp</span><br><span class="line">webp是一种可以有损或无损的压缩图片的方法，能够适用于有很多图片资源的网站上，它还供你选择压缩程度，让你自由控制图片大小和图片质量，在不影响质量的前提下，大约可以节省30%的体积，详细见：[官网比较](https://developers.google.com/speed/webp/docs/c_study)</span><br><span class="line">#### webp是怎么做的</span><br><span class="line">我们知道，在大部分网站中，图片占用了60%左右的页面资源，这非常影响整个渲染时间，而且，在移动端页面大小更是重要，这关系到流量和电池寿命。那webp是怎么做的呢？</span><br><span class="line"></span><br><span class="line">1. 有损压缩</span><br><span class="line">有损webp基于VP8视频编码方法来压缩图像数据，基础步骤类似于JPEG压缩,流程如下图所示，红色部门代表与JPEG不同的部分。</span><br><span class="line">![alt](https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/07_browser_webview/webpProcess.jpg)</span><br><span class="line">    1. 格式转换</span><br><span class="line">    若压缩前图像数据为RGB格式，则需要先将格式转换成YUV格式，Y表示亮度，UV表示色度，之所以这么做是因为人类的眼睛对色度敏感度比亮度低，所以可通过减少色度来减少图片占用空间。比如每四个相邻像素点采用一对UV值</span><br><span class="line">    2. 分割宏块</span><br><span class="line">    将数据分割成4 * 4或8 * 8 或 16 * 16的宏块</span><br><span class="line">    3. 预测编码</span><br><span class="line">    预测编码的原理是基于前面编码好的宏块，预测多余的动作颜色等信息，属于帧内预测（帧内预测是一个物理学术语，指的是H.264采用的一种新技术）</span><br><span class="line">        - H_PRED（horizontal prediction）使用宏块左边的一列（简称L）来填充剩余列</span><br><span class="line">        - V_PRED（vertical prediction） 使用宏块上面的一行（简称A）来填充剩余行</span><br><span class="line">        - DC_PRED（DC prediction） 使用L和A的所有像素的平均值填充宏块</span><br><span class="line">        - TM_PRED（TrueMotion prediction） 使用渐进的方式</span><br><span class="line">        下面展示了不同帧内预测的模式</span><br><span class="line">        ![alt](https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/07_browser_webview/compression-intra_modes.png)</span><br><span class="line">    4. 接下来通过FDCT（正向离散余弦变换）处理残差。让变换后的数据低频部分分布在数据块左上方，高频集中在右下方以实现更高效的压缩</span><br><span class="line">    5. 最后将结果量化并进行熵编码，webp使用布尔算数编码作为熵编码方式，直接把输入的消息编码为一个满足(0.0 &lt;= n &lt;= 1.0)的小数n</span><br><span class="line"></span><br><span class="line">2. 无损压缩</span><br><span class="line">无损webp采用了预测变换、颜色变换、减去绿色变换、彩色缓存编码、LZ77反响参考等不同技术来处理图像，之后对变换图像数据和参数进行熵编码，有兴趣的自行了解。</span><br><span class="line"></span><br><span class="line">#### 如何使用webp</span><br><span class="line">首先是支持度：</span><br><span class="line">pc上谷歌、火狐、edge、opera支持度很好，换句话说使用blink内核的都没啥问题。</span><br><span class="line">android4以上 ios支持过一段时间，后来移除了，web端支持尚好，不过ie和safari完全不支持</span><br><span class="line">详见[wiki](https://en.wikipedia.org/wiki/WebP#Support)</span><br><span class="line">其实，目前有很多垫片已经几乎可以做到常用环境全支持webp了，比如</span><br><span class="line">- [安卓4.0以下支持](https://github.com/alexey-pelykh/webp-android-backport)</span><br><span class="line">- [ios支持](https://github.com/carsonmcdonald/WebP-iOS-example)</span><br><span class="line">不过这些是native那边做的，那我们前端怎么做呢？</span><br><span class="line">- 服务端</span><br><span class="line">    1. 通过accetp头信息进行协商</span><br><span class="line">    发送accept字段非常常见，这个字段说明浏览器可以接受的内容类型，如果浏览器发送一个*image/webp*，那么服务端就知道浏览器支持webp格式，然后直接使用ok</span><br><span class="line"></span><br><span class="line">- 客户端 </span><br><span class="line">    1. [Modernizr](https://github.com/Modernizr/Modernizr)</span><br><span class="line">    Modernizr是一个js库，可以非常方便的查看你的浏览器H5/Css3的支持度，你可以查看下面这些字段：Modernizr.webp, Modernizr.webp.lossless, Modernizr.webp.alpha and Modernizr.webp.animation</span><br><span class="line">    2. 使用H5的**picture**元素</span><br><span class="line">    picture允许你放置多个source和一个回退的img，就算webp不支持，也会显示回退方案</span><br><span class="line">    3. 使用js</span><br><span class="line">    这是尝试解码一个非常小的不同版本webp图片</span><br><span class="line">```javascript</span><br><span class="line">//  check_webp_feature:</span><br><span class="line">//  &apos;feature&apos; can be one of &apos;lossy&apos;, &apos;lossless&apos;, &apos;alpha&apos; or &apos;animation&apos;.</span><br><span class="line">//  &apos;callback(feature, result)&apos; will be passed back the detection result (in an asynchronous way!)</span><br><span class="line">function check_webp_feature(feature, callback) &#123;</span><br><span class="line">    var kTestImages = &#123;</span><br><span class="line">        lossy: &quot;UklGRiIAAABXRUJQVlA4IBYAAAAwAQCdASoBAAEADsD+JaQAA3AAAAAA&quot;,</span><br><span class="line">        lossless: &quot;UklGRhoAAABXRUJQVlA4TA0AAAAvAAAAEAcQERGIiP4HAA==&quot;,</span><br><span class="line">        alpha: &quot;UklGRkoAAABXRUJQVlA4WAoAAAAQAAAAAAAAAAAAQUxQSAwAAAARBxAR/Q9ERP8DAABWUDggGAAAABQBAJ0BKgEAAQAAAP4AAA3AAP7mtQAAAA==&quot;,</span><br><span class="line">        animation: &quot;UklGRlIAAABXRUJQVlA4WAoAAAASAAAAAAAAAAAAQU5JTQYAAAD/////AABBTk1GJgAAAAAAAAAAAAAAAAAAAGQAAABWUDhMDQAAAC8AAAAQBxAREYiI/gcA&quot;</span><br><span class="line">    &#125;;</span><br><span class="line">    var img = new Image();</span><br><span class="line">    img.onload = function () &#123;</span><br><span class="line">        var result = (img.width &gt; 0) &amp;&amp; (img.height &gt; 0);</span><br><span class="line">        callback(feature, result);</span><br><span class="line">    &#125;;</span><br><span class="line">    img.onerror = function () &#123;</span><br><span class="line">        callback(feature, false);</span><br><span class="line">    &#125;;</span><br><span class="line">    img.src = &quot;data:image/webp;base64,&quot; + kTestImages[feature];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="再说说variable-fonts"><a href="#再说说variable-fonts" class="headerlink" title="再说说variable fonts"></a>再说说variable fonts</h3><p>之前就有了解，直接抛链接了: <a href="https://github.com/FoxDaxian/memory/issues/4" target="_blank" rel="noopener">variable fonts</a><br><a href="https://v-fonts.com/support/" target="_blank" rel="noopener">支持程度</a></p>
+<h5 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h5><p><a href="http://chuquan.me/2018/01/21/browser-architecture-overview/" target="_blank" rel="noopener">现代浏览器工作原理</a><br><a href="http://www.eyee21.com/category/%E6%B5%8F%E8%A7%88%E5%99%A8" target="_blank" rel="noopener">浏览器内核</a><br><a href="https://www.cnblogs.com/pqjwyn/p/7120342.html" target="_blank" rel="noopener">前端解读webview</a><br><a href="https://tech.meituan.com/2017/06/09/webviewperf.html" target="_blank" rel="noopener">美团webview性能、体验分析和优化</a><br><a href="http://web.jobbole.com/84826/" target="_blank" rel="noopener">主流浏览器内核介绍</a><br><a href="https://lingenliu.com/2016/09/03/something-about-android-webview/" target="_blank" rel="noopener">安卓webview选择对比</a><br><a href="https://developers.google.com/speed/webp/" target="_blank" rel="noopener">webp官网</a><br><a href="https://tech.upyun.com/article/253/%E9%83%BD%E8%AF%B4%20WebP%20%E5%8E%89%E5%AE%B3%EF%BC%8C%E7%A9%B6%E7%AB%9F%E5%8E%89%E5%AE%B3%E5%9C%A8%E5%93%AA%E9%87%8C%EF%BC%9F%20.html" target="_blank" rel="noopener">webp原理</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/memory/tags/frontend/" rel="tag"># frontend</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/memory/2021/05/09/cssForm/" rel="next" title="css实现表单验证">
+                <i class="fa fa-chevron-left"></i> css实现表单验证
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/memory/2021/05/09/console/" rel="prev" title="console介绍">
+                console介绍 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">FoxDaxian</p>
+              <div class="site-description motion-element" itemprop="description">遇到好玩的，稀奇的，新鲜的，记录下来，分享出去。</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/memory/archives/">
+                
+                    <span class="site-state-item-count">40</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">categories</span>
+                  
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#再说说variable-fonts"><span class="nav-number">1.</span> <span class="nav-text">再说说variable fonts</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#参考链接"><span class="nav-number">1.0.1.</span> <span class="nav-text">参考链接</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">FoxDaxian</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/memory/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/memory/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/memory/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/memory/js/utils.js?v=7.2.0"></script>
+
+  <script src="/memory/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/memory/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+  
+  <script src="/memory/js/scrollspy.js?v=7.2.0"></script>
+<script src="/memory/js/post-details.js?v=7.2.0"></script>
+
+
+
+  
+
+
+  <script src="/memory/js/next-boot.js?v=7.2.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

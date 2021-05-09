@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/memory/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/memory/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/memory/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/memory/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/memory/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/memory/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/memory/',
+    scheme: 'Muse',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="移动端适配，老生常谈的问题，这次再谈一次。闲话少说，直奔正题。 一些像素概念 物理像素：即实际的每一个物理像素，也就是移动设备上每一个物理显示单元（点） 设备逻辑像素（css中的px）：可以理解为一个虚拟的相对的显示块，与物理像素有着一定的比例关系，也就是下面的设备像素比 设备像素比（dpr）：= 物理像素 / 设备独立像素(px)如果dpr为1的话，那么1px = 1物理像素，x轴y轴加起来就是">
+<meta name="keywords" content="frontend">
+<meta property="og:type" content="article">
+<meta property="og:title" content="rem移动端适配">
+<meta property="og:url" content="http://yoursite.com/2021/05/09/rem/index.html">
+<meta property="og:site_name" content="fox的博客">
+<meta property="og:description" content="移动端适配，老生常谈的问题，这次再谈一次。闲话少说，直奔正题。 一些像素概念 物理像素：即实际的每一个物理像素，也就是移动设备上每一个物理显示单元（点） 设备逻辑像素（css中的px）：可以理解为一个虚拟的相对的显示块，与物理像素有着一定的比例关系，也就是下面的设备像素比 设备像素比（dpr）：= 物理像素 / 设备独立像素(px)如果dpr为1的话，那么1px = 1物理像素，x轴y轴加起来就是">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20190618215518.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20190618215524.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20190618215817.gif">
+<meta property="og:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20190618221043.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20190618223230.jpg">
+<meta property="og:updated_time" content="2021-05-09T23:37:00.845Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="rem移动端适配">
+<meta name="twitter:description" content="移动端适配，老生常谈的问题，这次再谈一次。闲话少说，直奔正题。 一些像素概念 物理像素：即实际的每一个物理像素，也就是移动设备上每一个物理显示单元（点） 设备逻辑像素（css中的px）：可以理解为一个虚拟的相对的显示块，与物理像素有着一定的比例关系，也就是下面的设备像素比 设备像素比（dpr）：= 物理像素 / 设备独立像素(px)如果dpr为1的话，那么1px = 1物理像素，x轴y轴加起来就是">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20190618215518.png">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2021/05/09/rem/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>rem移动端适配 | fox的博客</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/memory/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">fox的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">github地址 -> https://github.com/FoxDaxian</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/memory/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/memory/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/memory/2021/05/09/rem/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="FoxDaxian">
+      <meta itemprop="description" content="遇到好玩的，稀奇的，新鲜的，记录下来，分享出去。">
+      <meta itemprop="image" content="/memory/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fox的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">rem移动端适配
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2021-05-09 23:37:00" itemprop="dateCreated datePublished" datetime="2021-05-09T23:37:00+00:00">2021-05-09</time>
+            </span>
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/memory/categories/原理/" itemprop="url" rel="index"><span itemprop="name">原理</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>移动端适配，老生常谈的问题，这次再谈一次。<br>闲话少说，直奔正题。</p>
+<h3 id="一些像素概念"><a href="#一些像素概念" class="headerlink" title="一些像素概念"></a>一些像素概念</h3><ol>
+<li>物理像素：即实际的每一个物理像素，也就是移动设备上每一个物理显示单元（点）</li>
+<li>设备逻辑像素（css中的px）：可以理解为一个虚拟的相对的显示块，与物理像素有着一定的比例关系，也就是下面的设备像素比</li>
+<li>设备像素比（dpr）：= 物理像素 / 设备独立像素(px)<br>如果dpr为1的话，那么1px = 1物理像素，x轴y轴加起来就是1<img src="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20190618215518.png" alt><br>如果dpr为2的话，那么1px = 2物理像素，x轴y轴加起来就是4<br><img src="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20190618215524.png" alt><br>以此类推<br>在js中可以通过<code>window.devicePixelRatio</code>获取当前设备的dpr。</li>
+</ol>
+<p>这里说明一下，无论dpr多大，1px的大小通常来说是一致的，这也就意味着，随着dpr的增大，物理像素点会越来越小，这样才能容纳更多的物理像素，才能更高清，更retina<br><img src="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20190618215817.gif" alt></p>
+<hr>
+<p>说完基本概念，来说一下几个问题：</p>
+<h4 id="retina屏图片模糊"><a href="#retina屏图片模糊" class="headerlink" title="retina屏图片模糊"></a>retina屏图片模糊</h4><p>首先普及一下位图像素：一个位图像素是图片的最小数据单元，每一个单元都包含具体的显示信息（色彩，透明度，位置等等）<br>那为什么在dpr高的retina屏上反而会模糊呢？看图~<br><img src="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20190618221043.jpg" alt><br>在1dpr的屏幕上，位图像素和物理像素一一对应没什么问题，但是在retina屏上，由于一个px由4个甚至更多的物理像素组成，并且单个位图像素不能进一步分割，所以会出现就近取色的情况，如果取色不均，那么就会导致图片模糊。<br>对于这种情况，只能采用@2x、@3x这样的倍图来适配高清展示，这样侧向说明了为什么照着iphone6做的ui稿不是375，而是750的问题。<br>虽然这样在dpr为1的屏幕上会导致1个物理像素上有4个位图像素，但是这种情况的取色算法更优，影响不大，不做讨论。</p>
+<h4 id="1px的粗细问题"><a href="#1px的粗细问题" class="headerlink" title="1px的粗细问题"></a>1px的粗细问题</h4><p>由于1px的实际大小是一样的，只是里面的物理像素数量不同，所以如果直接写1px是没问题的，不会出现粗细不同的情况，但是这样一来retina的优势也rem的作用也就没了，其实还是dpr的问题，dpr为1，那么1px就是一个物理像素，但是在retina中。1px实际可能有4、9个物理像素，ui想要的其实是1个物理像素，而不是1px，不过由于不是素所有的手机都能适配0.x，所以曲线救国，采用<code>scale</code>缩放或者设置meta都可以<br><img src="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/picgo/20190618223230.jpg" alt></p>
+<hr>
+<h3 id="viewport"><a href="#viewport" class="headerlink" title="viewport"></a>viewport</h3><h4 id="三个概念："><a href="#三个概念：" class="headerlink" title="三个概念："></a>三个概念：</h4><ol>
+<li>layout viewport</li>
+<li>visual viewport</li>
+<li>ideal viewport</li>
+</ol>
+<h5 id="layout-viewport"><a href="#layout-viewport" class="headerlink" title="layout viewport"></a>layout viewport</h5><p>最开始，pc上的页面是无法再移动端正常显示的，因为屏幕太小，会挤作一团，所以就有了viewport的概念，又称<code>布局视口</code>（虚拟视口），这个视口大小接近于pc，大部分都是980px。</p>
+<h5 id="visual-viewport"><a href="#visual-viewport" class="headerlink" title="visual viewport"></a>visual viewport</h5><p>有了<code>布局视口</code>，还缺一个承载它的真是视口，也就是移动设备的可视区域-<code>视觉视口</code>（物理视口）,这个尺寸随着设备的不同也有不同。这样在<code>视觉视口</code>中创建了一个<code>布局视口</code>，类似<code>overscroll:scroll;</code>这样，可以通过滚动拖拽、缩放扩大进行较好的访问体验。</p>
+<h5 id="ideal-viewport"><a href="#ideal-viewport" class="headerlink" title="ideal viewport"></a>ideal viewport</h5><p>像上面的体验在早些年可能比较多，但是近几年几乎很少了，还是归咎于用户体验，所以，我们还需要一个视口-<code>理想视口</code>（同样是虚拟视口），不过这个理想视口的大小是等于<code>布局视口</code>的，这样用户就能得到更好的浏览体验。</p>
+<hr>
+<h3 id="一个特性"><a href="#一个特性" class="headerlink" title="一个特性"></a>一个特性</h3><p>viewport有六种可以设置的常用属性：</p>
+<ol>
+<li><p>width：定义layout viewport的宽度，如果不设置，大部分情况下默认是980</p>
+</li>
+<li><p>height：非常用</p>
+</li>
+<li><p>initial-scale：可以以某个比例将页面缩放\放大，你也可以用它来设置<code>ideal viewport</code>：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">'viewport'</span> <span class="attr">content</span>=<span class="string">'initial-scale=1'</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>maximum-scale：限制最大放大比例</p>
+</li>
+<li><p>minimum-scale：限制最小缩小比例</p>
+</li>
+<li><p>user-scalable：是否允许用户放大\缩小页面，默认为yes</p>
+</li>
+</ol>
+<hr>
+<h3 id="rem适配方案"><a href="#rem适配方案" class="headerlink" title="rem适配方案"></a>rem适配方案</h3><p>先说原理，通过meta修正1px对应的物理像素数量，在根据统一的设计稿来生成html上的动态font-size，根据dpr构造字体等误差较大的样式的mixin</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 第一版:</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">initRem</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> meta = <span class="built_in">document</span>.querySelector(<span class="string">'meta[name="viewport"]'</span>);;</span><br><span class="line">  <span class="keyword">const</span> html = <span class="built_in">document</span>.documentElement;</span><br><span class="line">  <span class="keyword">const</span> cliW = html.clientWidth;</span><br><span class="line">  <span class="keyword">const</span> dpr = <span class="built_in">window</span>.devicePixelRatio || <span class="number">1</span>;</span><br><span class="line">  meta.setAttribute(<span class="string">'name'</span>, <span class="string">'viewport'</span>);</span><br><span class="line">  meta.setAttribute(</span><br><span class="line">      <span class="string">'content'</span>,</span><br><span class="line">      <span class="string">`width=<span class="subst">$&#123;cliW * dpr&#125;</span>, initial-scale=<span class="subst">$&#123;<span class="number">1</span> <span class="regexp">/</span></span></span></span><br><span class="line"><span class="string"><span class="subst"><span class="regexp">          dpr&#125; ,maximum-scale=$&#123;1 /</span> dpr&#125;</span>, minimum-scale=<span class="subst">$&#123;<span class="number">1</span> <span class="regexp">/</span></span></span></span><br><span class="line"><span class="string"><span class="subst"><span class="regexp">          dpr&#125;,user-scalable=no`</span></span></span></span><br><span class="line"><span class="string"><span class="subst"><span class="regexp">  );</span></span></span></span><br><span class="line"><span class="string"><span class="subst"><span class="regexp">  html.setAttribute('data-dpr', dpr);</span></span></span></span><br><span class="line"><span class="string"><span class="subst"><span class="regexp">  /</span><span class="regexp">/ 这样计算的好处是，你可以直接用ui的px/</span><span class="number">100</span>得到的就是rem大小，方便快捷，无需mixin</span></span></span><br><span class="line"><span class="string"><span class="subst">  html.style.fontSize = <span class="number">10</span> <span class="regexp">/ 75 * cliW * dpr + 'px';</span></span></span></span><br><span class="line"><span class="string"><span class="subst"><span class="regexp">&#125;</span></span></span></span><br><span class="line"><span class="string"><span class="subst"><span class="regexp">initRem();</span></span></span></span><br><span class="line"><span class="string"><span class="subst"><span class="regexp">window.onresize = window.onorientationchange = initRem();</span></span></span></span><br></pre></td></tr></table></figure>
+
+<p>对于引入的第三方ui组件，需要使用px2rem转换工具去做整体转换，比如<a href="https://github.com/cuth/postcss-pxtorem" target="_blank" rel="noopener">postcss-pxtorem</a></p>
+<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p><a href="http://www.html-js.com/article/Mobile-terminal-H5-mobile-terminal-HD-multi-screen-adaptation-scheme%203041" target="_blank" rel="noopener">移动端高清，多屏适配</a><br><a href="http://helloweb.wang/qianduankaifa/3549.html" target="_blank" rel="noopener">viewport详解</a><br><a href="http://www.ayqy.net/blog/%E5%AE%8C%E5%85%A8%E7%90%86%E8%A7%A3px-dpr-dpi-dip/" target="_blank" rel="noopener">完全理解px dpr dpi dip</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/memory/tags/frontend/" rel="tag"># frontend</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/memory/2021/05/09/rgbConvertHSL/" rel="next" title="RGB <=> HSL">
+                <i class="fa fa-chevron-left"></i> RGB <=> HSL
+              </=></a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/memory/2021/05/09/regexp/" rel="prev" title="正则表达式">
+                正则表达式 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">FoxDaxian</p>
+              <div class="site-description motion-element" itemprop="description">遇到好玩的，稀奇的，新鲜的，记录下来，分享出去。</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/memory/archives/">
+                
+                    <span class="site-state-item-count">40</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">categories</span>
+                  
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一些像素概念"><span class="nav-number">1.</span> <span class="nav-text">一些像素概念</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#retina屏图片模糊"><span class="nav-number">1.1.</span> <span class="nav-text">retina屏图片模糊</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1px的粗细问题"><span class="nav-number">1.2.</span> <span class="nav-text">1px的粗细问题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#viewport"><span class="nav-number">2.</span> <span class="nav-text">viewport</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#三个概念："><span class="nav-number">2.1.</span> <span class="nav-text">三个概念：</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#layout-viewport"><span class="nav-number">2.1.1.</span> <span class="nav-text">layout viewport</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#visual-viewport"><span class="nav-number">2.1.2.</span> <span class="nav-text">visual viewport</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ideal-viewport"><span class="nav-number">2.1.3.</span> <span class="nav-text">ideal viewport</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一个特性"><span class="nav-number">3.</span> <span class="nav-text">一个特性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rem适配方案"><span class="nav-number">4.</span> <span class="nav-text">rem适配方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考链接"><span class="nav-number">5.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">FoxDaxian</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/memory/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/memory/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/memory/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/memory/js/utils.js?v=7.2.0"></script>
+
+  <script src="/memory/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/memory/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+  
+  <script src="/memory/js/scrollspy.js?v=7.2.0"></script>
+<script src="/memory/js/post-details.js?v=7.2.0"></script>
+
+
+
+  
+
+
+  <script src="/memory/js/next-boot.js?v=7.2.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

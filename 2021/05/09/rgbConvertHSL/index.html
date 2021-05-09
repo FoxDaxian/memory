@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/memory/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+<link rel="stylesheet" href="/memory/css/main.css?v=7.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/memory/images/apple-touch-icon-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/memory/images/favicon-32x32-next.png?v=7.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/memory/images/favicon-16x16-next.png?v=7.2.0">
+
+
+  <link rel="mask-icon" href="/memory/images/logo.svg?v=7.2.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/memory/',
+    scheme: 'Muse',
+    version: '7.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false,"dimmer":false},
+    back2top: true,
+    back2top_sidebar: false,
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="首先我们需要了解两种颜色模式：  RGB HSL  RGB顾名思义，red，green，blue的首字母缩写。RGB是添加剂颜色系统，意味着哪个色值高，最终颜色会更趋向与哪个。如果色值相等，那么趋向于灰色，为0则是黑色，255则是白色。一种替换方案是你可以用十六进制表示，也就是说将各个色值从十进制转换成十六进制。比如： rgb(50, 100, 0) =&amp;gt; #326400 不过，RGB很难阅">
+<meta name="keywords" content="frontend">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RGB &lt;=&gt; HSL">
+<meta property="og:url" content="http://yoursite.com/2021/05/09/rgbConvertHSL/index.html">
+<meta property="og:site_name" content="fox的博客">
+<meta property="og:description" content="首先我们需要了解两种颜色模式：  RGB HSL  RGB顾名思义，red，green，blue的首字母缩写。RGB是添加剂颜色系统，意味着哪个色值高，最终颜色会更趋向与哪个。如果色值相等，那么趋向于灰色，为0则是黑色，255则是白色。一种替换方案是你可以用十六进制表示，也就是说将各个色值从十进制转换成十六进制。比如： rgb(50, 100, 0) =&amp;gt; #326400 不过，RGB很难阅">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/10_about_color_mode/hue.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/10_about_color_mode/saturation.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/10_about_color_mode/light.jpg">
+<meta property="og:updated_time" content="2021-05-09T23:37:00.845Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RGB &lt;=&gt; HSL">
+<meta name="twitter:description" content="首先我们需要了解两种颜色模式：  RGB HSL  RGB顾名思义，red，green，blue的首字母缩写。RGB是添加剂颜色系统，意味着哪个色值高，最终颜色会更趋向与哪个。如果色值相等，那么趋向于灰色，为0则是黑色，255则是白色。一种替换方案是你可以用十六进制表示，也就是说将各个色值从十进制转换成十六进制。比如： rgb(50, 100, 0) =&amp;gt; #326400 不过，RGB很难阅">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/10_about_color_mode/hue.jpg">
+
+
+
+
+
+  
+  
+  <link rel="canonical" href="http://yoursite.com/2021/05/09/rgbConvertHSL/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>RGB <=> HSL | fox的博客</=></title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/memory/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">fox的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">github地址 -> https://github.com/FoxDaxian</p>
+      
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/memory/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+      
+    
+
+    
+
+    <a href="/memory/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/memory/2021/05/09/rgbConvertHSL/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="FoxDaxian">
+      <meta itemprop="description" content="遇到好玩的，稀奇的，新鲜的，记录下来，分享出去。">
+      <meta itemprop="image" content="/memory/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="fox的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">RGB <=> HSL
+
+              
+            
+          </=></h1>
+        
+
+        <div class="post-meta">
+
+          
+          
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2021-05-09 23:37:00" itemprop="dateCreated datePublished" datetime="2021-05-09T23:37:00+00:00">2021-05-09</time>
+            </span>
+          
+
+          
+
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/memory/categories/原理/" itemprop="url" rel="index"><span itemprop="name">原理</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          <br>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>首先我们需要了解两种颜色模式：</p>
+<ul>
+<li>RGB</li>
+<li>HSL</li>
+</ul>
+<h3 id="RGB"><a href="#RGB" class="headerlink" title="RGB"></a>RGB</h3><p>顾名思义，red，green，blue的首字母缩写。RGB是添加剂颜色系统，意味着哪个色值高，最终颜色会更趋向与哪个。如果色值相等，那么趋向于灰色，为0则是黑色，255则是白色。<br>一种替换方案是你可以用十六进制表示，也就是说将各个色值从十进制转换成十六进制。比如：</p>
+<p><code>rgb(50, 100, 0)</code> =&gt; <code>#326400</code></p>
+<p>不过，RGB很难阅读，或者直观的知道最终的颜色，所以又有了HSL，一种更直观的颜色表示形式。</p>
+<h3 id="HSL"><a href="#HSL" class="headerlink" title="HSL"></a>HSL</h3><p>同样，HSL也是首字母缩写：hue，saturation，light。</p>
+<ul>
+<li>hue：色相 - 色彩的基本属性，单位是角度，所以，我们可以用一个圆环表示出所有的色相<br><img src="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/10_about_color_mode/hue.jpg" alt="12"></li>
+<li>saturation：饱和度 - 色彩的纯度，值越高，色彩越纯越浓，越低，色彩越灰越淡。<br><img src="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/10_about_color_mode/saturation.jpg" alt="12"></li>
+<li>light：亮度 - 色彩的明暗程度，值越高，月白，直到变成白色，反之变成黑色。该值优先级最高，可以直接影响前两者。。<br><img src="https://raw.githubusercontent.com/FoxDaxian/FoxDaxian.github.io/master/assets/10_about_color_mode/light.jpg" alt="12"></li>
+</ul>
+<h3 id="颜色模式之间的转换"><a href="#颜色模式之间的转换" class="headerlink" title="颜色模式之间的转换"></a>颜色模式之间的转换</h3><p>RGB和HSL都可以将颜色分解成多个属性，要想颜色语法转换，我们需要计算他们的属性。<br>除了hue，其他值都可以用百分比表示，下面的函数中，这些百分比将有小数表示。<br>不过我们不会深入数学公式，只会简单的了解一下，然后转换成js代码。</p>
+<h3 id="RGB-转-HSl"><a href="#RGB-转-HSl" class="headerlink" title="RGB 转 HSl"></a>RGB 转 HSl</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">rgbToHsl</span>(<span class="params">r, g, b</span>) </span>&#123;</span><br><span class="line">        r /= <span class="number">255</span>, g /= <span class="number">255</span>, b /= <span class="number">255</span>;</span><br><span class="line">        <span class="keyword">var</span> max = <span class="built_in">Math</span>.max(r, g, b), min = <span class="built_in">Math</span>.min(r, g, b);</span><br><span class="line">        <span class="keyword">var</span> h, s, l = (max + min) / <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (max == min) &#123;</span><br><span class="line">            h = s = <span class="number">0</span>; <span class="comment">// achromatic</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">var</span> d = max - min;</span><br><span class="line">            s = l &gt; <span class="number">0.5</span> ? d / (<span class="number">2</span> - max - min) : d / (max + min);</span><br><span class="line">            <span class="keyword">switch</span> (max) &#123;</span><br><span class="line">                <span class="keyword">case</span> r: h = (g - b) / d + (g &lt; b ? <span class="number">6</span> : <span class="number">0</span>); <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> g: h = (b - r) / d + <span class="number">2</span>; <span class="keyword">break</span>;</span><br><span class="line">                <span class="keyword">case</span> b: h = (r - g) / d + <span class="number">4</span>; <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            h /= <span class="number">6</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> [h, s, l];</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="HSL-转-RGB"><a href="#HSL-转-RGB" class="headerlink" title="HSL 转 RGB"></a>HSL 转 RGB</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">hslToRgb</span>(<span class="params">h, s, l</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> r, g, b;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (s == <span class="number">0</span>) &#123;</span><br><span class="line">            r = g = b = l; <span class="comment">// achromatic</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">var</span> hue2rgb = <span class="function"><span class="keyword">function</span> <span class="title">hue2rgb</span>(<span class="params">p, q, t</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">if</span> (t &lt; <span class="number">0</span>) t += <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">if</span> (t &gt; <span class="number">1</span>) t -= <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">if</span> (t &lt; <span class="number">1</span> / <span class="number">6</span>) <span class="keyword">return</span> p + (q - p) * <span class="number">6</span> * t;</span><br><span class="line">                <span class="keyword">if</span> (t &lt; <span class="number">1</span> / <span class="number">2</span>) <span class="keyword">return</span> q;</span><br><span class="line">                <span class="keyword">if</span> (t &lt; <span class="number">2</span> / <span class="number">3</span>) <span class="keyword">return</span> p + (q - p) * (<span class="number">2</span> / <span class="number">3</span> - t) * <span class="number">6</span>;</span><br><span class="line">                <span class="keyword">return</span> p;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">var</span> q = l &lt; <span class="number">0.5</span> ? l * (<span class="number">1</span> + s) : l + s - l * s;</span><br><span class="line">            <span class="keyword">var</span> p = <span class="number">2</span> * l - q;</span><br><span class="line">            r = hue2rgb(p, q, h + <span class="number">1</span> / <span class="number">3</span>);</span><br><span class="line">            g = hue2rgb(p, q, h);</span><br><span class="line">            b = hue2rgb(p, q, h - <span class="number">1</span> / <span class="number">3</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> [<span class="built_in">Math</span>.round(r * <span class="number">255</span>), <span class="built_in">Math</span>.round(g * <span class="number">255</span>), <span class="built_in">Math</span>.round(b * <span class="number">255</span>)];</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样我们就可在RGB和HSl之间进行任意转换，有什么奇怪的需求也就没问题啦<br>比如这个<a href="https://codepen.io/AdamGiese/full/989988044f3b8cf6403e3c60f56dd612" target="_blank" rel="noopener">工具</a></p>
+<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><ul>
+<li><a href="https://zhuanlan.zhihu.com/p/25576030" target="_blank" rel="noopener">学会调色，从理解HSL面板开始</a></li>
+<li><a href="https://www.zhangxinxu.com/wordpress/2010/03/javascript-hex-rgb-hsl-color-convert/" target="_blank" rel="noopener">JS HEX十六进制与RGB, HSL颜色的相互转换</a></li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        
+          
+        
+        <div class="post-tags">
+          
+            <a href="/memory/tags/frontend/" rel="tag"># frontend</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/memory/2021/05/09/scroll/" rel="next" title="移动端长列表滚动优化">
+                <i class="fa fa-chevron-left"></i> 移动端长列表滚动优化
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/memory/2021/05/09/rem/" rel="prev" title="rem移动端适配">
+                rem移动端适配 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">FoxDaxian</p>
+              <div class="site-description motion-element" itemprop="description">遇到好玩的，稀奇的，新鲜的，记录下来，分享出去。</div>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/memory/archives/">
+                
+                    <span class="site-state-item-count">40</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">11</span>
+                    <span class="site-state-item-name">categories</span>
+                  
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#RGB"><span class="nav-number">1.</span> <span class="nav-text">RGB</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HSL"><span class="nav-number">2.</span> <span class="nav-text">HSL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#颜色模式之间的转换"><span class="nav-number">3.</span> <span class="nav-text">颜色模式之间的转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RGB-转-HSl"><span class="nav-number">4.</span> <span class="nav-text">RGB 转 HSl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HSL-转-RGB"><span class="nav-number">5.</span> <span class="nav-text">HSL 转 RGB</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考链接"><span class="nav-number">6.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+  
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">FoxDaxian</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/memory/lib/jquery/index.js?v=3.4.1"></script>
+
+  
+  <script src="/memory/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/memory/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/memory/js/utils.js?v=7.2.0"></script>
+
+  <script src="/memory/js/motion.js?v=7.2.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/memory/js/schemes/muse.js?v=7.2.0"></script>
+
+
+
+  
+  <script src="/memory/js/scrollspy.js?v=7.2.0"></script>
+<script src="/memory/js/post-details.js?v=7.2.0"></script>
+
+
+
+  
+
+
+  <script src="/memory/js/next-boot.js?v=7.2.0"></script>
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+
+  
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
